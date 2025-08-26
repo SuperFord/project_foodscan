@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaUpload } from "react-icons/fa";
-import { API_BASE } from "../config";
+import { API_BASE } from "../../config";
 
 export default function ListFoodAdd() {
   const navigate = useNavigate();

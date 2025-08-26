@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import { API_BASE } from "../config";
+import { API_BASE } from "../../config";
 
 export default function ListFoodEdit() {
   const navigate = useNavigate();

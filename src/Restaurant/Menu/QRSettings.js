@@ -19,9 +19,9 @@ export default function QRSettings() {
           setEnableQR(Boolean(data.enableQR))
           setRequireQR(Boolean(data.requireQR))
         setPromptpayNumber(data.promptpayNumber || "")
-        }
+      }
       } finally {
-        setLoading(false)
+      setLoading(false)
       }
     }
     fetchSettings()

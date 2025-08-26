@@ -4,7 +4,7 @@ import { FaArrowLeft , FaTrash } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { API_BASE } from "../config";
+import { API_BASE } from "../../config";
 
 function TableReser() {
   const navigate = useNavigate();
