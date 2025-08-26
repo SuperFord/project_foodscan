@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { API_BASE } from "../../config"
 import { useLocation, useNavigate } from "react-router-dom"
 import { QRCodeCanvas } from "qrcode.react"
 import generatePayload from "promptpay-qr"
