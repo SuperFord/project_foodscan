@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { jwtDecode } from 'jwt-decode'; // Corrected import statement
-import { API_BASE } from "../../config";
 
 function Login() {
   const navigate = useNavigate();
@@ -23,7 +22,7 @@ function Login() {
     }
 
     try {
-      const response = await fetch(`${API_BASE}/api/login`, {
+      const response = await fetch('http://localhost:5000/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -100,7 +99,7 @@ function Login() {
         </div>
         {/* กรอกรหัส */}
         <div className="mb-4">
-          <label htmlFor="password" className="block text-1xl font-bold text_black">รหัสผ่าน</label>
+          <label htmlFor="password" className="block text-1xl font-bold text-black">รหัสผ่าน</label>
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
