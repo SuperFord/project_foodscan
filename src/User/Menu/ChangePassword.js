@@ -4,6 +4,7 @@ import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
 import Swal from 'sweetalert2'; // นำเข้า sweetalert2
 import { FiHome, FiUser } from "react-icons/fi"; // ไอคอนแบบเดียวกับในภาพ figma
 import { fetchWithAuth } from './fetchWithAuth';
+import { API_BASE } from "../../config";
 
 
 function ChangePassword() {
@@ -19,7 +20,7 @@ function ChangePassword() {
     useEffect(() => {
       // เรียก API ดึง Token
       const checkToken = async () => {
-        const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
+        const response = await fetchWithAuth("/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
         if (!response) {
           // fetchWithAuth จะ redirect ไป /User ให้อยู่แล้วถ้า token หมดอายุ
           return;
@@ -71,7 +72,7 @@ function ChangePassword() {
       setPasswordMismatch(false); // รีเซ็ตเมื่อรหัสผ่านตรงกัน
     
       try {
-        const response = await fetch("http://localhost:5000/api/changepassword", {
+        const response = await fetch(`${API_BASE}/api/changepassword`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
