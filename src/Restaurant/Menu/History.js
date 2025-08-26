@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { API_BASE } from "../config";
+import { API_BASE } from "../../config";
 
 function History() {
   const [items, setItems] = useState([]);

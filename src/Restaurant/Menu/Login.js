@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
-import { API_BASE } from "../config";
+import { API_BASE } from "../../config";
 
 function Login() {
   const navigate = useNavigate();
@@ -62,12 +62,12 @@ function Login() {
   return (
     <div className="w-full h-screen bg-white flex flex-col items-center">
       {/* Header */}
-      <div className="w-full flex items-center justify-between bg-yellow-500 p-4 text-white">
+      <div className="w-full flex items_center justify_between bg-yellow-500 p-4 text_white">
         <FaArrowLeft
           className="text-2xl cursor-pointer"
           onClick={() => navigate("/")}
         />
-        <h1 className="text-xl font-bold text-center flex-grow">ลงชื่อเข้าใช้</h1>
+        <h1 className="text-xl font-bold text_center flex-grow">ลงชื่อเข้าใช้</h1>
       </div>
 
       {/* Form */}
@@ -79,7 +79,7 @@ function Login() {
         )}
 
         <div className="mb-4">
-          <label htmlFor="username" className="block text-sm font-medium text-gray-700">ชื่อผู้ใช้</label>
+          <label htmlFor="username" className="block text-sm font_medium text-gray-700">ชื่อผู้ใช้</label>
           <input
             type="text"
             id="username"
@@ -93,7 +93,7 @@ function Login() {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">รหัสผ่าน</label>
+          <label htmlFor="password" className="block text-sm font_medium text-gray-700">รหัสผ่าน</label>
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
@@ -112,7 +112,7 @@ function Login() {
         </div>
 
         <button
-          className={`w-full p-3 text-white font-bold rounded-xl ${
+          className={`w-full p-3 text_white font-bold rounded-xl ${
             isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-yellow-400 hover:bg-yellow-500'
           }`}
           onClick={handleLogin}

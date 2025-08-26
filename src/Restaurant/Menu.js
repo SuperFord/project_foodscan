@@ -7,7 +7,7 @@ import statustableImg from "./img/statustable.png";
 import historyImg from "./img/history.png";
 import QrImg from "./img/Qr.png";
 import QrandtableImg from "./img/111.png";
-import { API_BASE } from "../config";
+import { API_BASE } from "../../config";
 
 function Menu() {
   const navigate = useNavigate();

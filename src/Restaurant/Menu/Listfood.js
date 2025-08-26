@@ -2,7 +2,7 @@ import { React, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaPlus, FaCog } from "react-icons/fa";
 import Switch from "react-switch";
-import { API_BASE } from "../config";
+import { API_BASE } from "../../config";
 
 export default function ListFood() {
   const navigate = useNavigate();
