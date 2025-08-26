@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { API_BASE } from "../../config";
 
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
@@ -17,7 +16,7 @@ const ProtectedRoute = ({ children }) => {
       }
 
       try {
-        const response = await fetch(`${API_BASE}/api/restaurant/verify`, {
+        const response = await fetch('http://localhost:5000/api/restaurant/verify', {
           headers: {
             'Authorization': `Bearer ${token}`
           }

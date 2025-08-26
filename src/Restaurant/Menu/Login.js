@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
-import { API_BASE } from "../config";
 
 function Login() {
   const navigate = useNavigate();
@@ -25,7 +24,7 @@ function Login() {
     setErrorMessage('');
 
     try {
-      const response = await fetch(`${API_BASE}/api/restaurant/login`, {
+      const response = await fetch('http://localhost:5000/api/restaurant/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

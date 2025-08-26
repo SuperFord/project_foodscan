@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import { API_BASE } from "../config";
 
 export default function ListFoodEdit() {
   const navigate = useNavigate();
@@ -24,14 +23,14 @@ export default function ListFoodEdit() {
 
   const fetchMenuData = async () => {
     try {
-      const response = await fetch(`${API_BASE}/api/menus/${id}`);
+      const response = await fetch(`http://localhost:5000/api/menus/${id}`);
       const result = await response.json();
       if (result.success) {
         setMenuName(result.menu.name);
         setPrice(result.menu.price);
         setDescription(result.menu.description);
         setCategory(result.menu.category);
-        setImageUrl(`${API_BASE}${result.menu.image_url}`);
+        setImageUrl(`http://localhost:5000${result.menu.image_url}`);
       } else {
         console.error("ไม่พบเมนู");
       }
@@ -85,7 +84,7 @@ export default function ListFoodEdit() {
     console.log("🔹 ส่งข้อมูลไปที่ API:", formData);
 
     try {
-      const response = await fetch(`${API_BASE}/api/menus/${id}`, {
+      const response = await fetch(`http://localhost:5000/api/menus/${id}`, {
         method: "PUT",
         body: formData,
       });
@@ -109,7 +108,7 @@ export default function ListFoodEdit() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${API_BASE}/api/categories`);
+      const response = await fetch("http://localhost:5000/api/categories");
       const data = await response.json();
       if (data.success) {
         const names = data.categories.map(cat => cat.name);
@@ -125,7 +124,7 @@ export default function ListFoodEdit() {
     if (!newCategory.trim()) return;
   
     try {
-      const response = await fetch(`${API_BASE}/api/category`, {
+      const response = await fetch("http://localhost:5000/api/category", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

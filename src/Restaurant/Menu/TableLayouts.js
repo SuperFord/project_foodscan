@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaUpload } from "react-icons/fa";
-import { API_BASE } from "../../config";
 
 function TableLayouts() {
   const navigate = useNavigate();
@@ -32,7 +31,7 @@ function TableLayouts() {
       imageFormData.append("image", file);
   
       try {
-        const imageResponse = await fetch(`${API_BASE}/api/table_map`, {
+        const imageResponse = await fetch("http://localhost:5000/api/table_map", {
           method: "POST",
           body: imageFormData,
         });
@@ -65,7 +64,7 @@ function TableLayouts() {
         layoutFormData.append("tname", formattedTname);
       }
   
-      const layoutResponse = await fetch(`${API_BASE}/api/table_layout`, {
+      const layoutResponse = await fetch("http://localhost:5000/api/table_layout", {
         method: "POST",
         body: layoutFormData,
       });

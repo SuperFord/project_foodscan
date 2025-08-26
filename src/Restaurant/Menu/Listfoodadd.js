@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaUpload } from "react-icons/fa";
-import { API_BASE } from "../config";
 
 export default function ListFoodAdd() {
   const navigate = useNavigate();
@@ -49,7 +48,7 @@ export default function ListFoodAdd() {
     }
 
     try {
-      const response = await fetch(`${API_BASE}/api/menus`, {
+      const response = await fetch("http://localhost:5000/api/menus", {
         method: "POST",
         body: formData,
       });
@@ -76,7 +75,7 @@ export default function ListFoodAdd() {
     if (!newCategory.trim()) return;
   
     try {
-      const response = await fetch(`${API_BASE}/api/category`, {
+      const response = await fetch("http://localhost:5000/api/category", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -100,7 +99,7 @@ export default function ListFoodAdd() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${API_BASE}/api/categories`);
+      const response = await fetch("http://localhost:5000/api/categories");
       const data = await response.json();
       if (data.success) {
         const names = data.categories.map(cat => cat.name);
@@ -271,7 +270,7 @@ export default function ListFoodAdd() {
         ></textarea>
 
         <button
-          className="w-full mt-6 p-3 bg-yellow-400 text_white font-bold rounded-xl"
+          className="w-full mt-6 p-3 bg-yellow-400 text-white font-bold rounded-xl"
           onClick={handleSubmit}
         >
           ยืนยัน

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaUpload } from "react-icons/fa";
-import { API_BASE } from "../../config";
 
 function TableEditlayouts() {
   const navigate = useNavigate();
@@ -22,13 +21,13 @@ function TableEditlayouts() {
 
   const fetchExistingData = async () => {
     try {
-        const mapResponse = await fetch(`${API_BASE}/api/table_map`);
+        const mapResponse = await fetch("http://localhost:5000/api/table_map");
         const mapResult = await mapResponse.json();
         if (mapResult.success && mapResult.table_maps.length > 0) {
-          setImageUrl(`${API_BASE}${mapResult.table_maps[0].image_path}`);
+          setImageUrl(`http://localhost:5000${mapResult.table_maps[0].image_path}`);
         }
   
-        const layoutResponse = await fetch(`${API_BASE}/api/table_layout`);
+        const layoutResponse = await fetch("http://localhost:5000/api/table_layout");
         const layoutResult = await layoutResponse.json();
         if (layoutResult.success) {
           const tables = layoutResult.tables;
@@ -47,7 +46,7 @@ function TableEditlayouts() {
 
   const fetchReservationWindow = async () => {
     try {
-      const res = await fetch(`${API_BASE}/api/settings/reservation-window`);
+      const res = await fetch("http://localhost:5000/api/settings/reservation-window");
       const data = await res.json();
       if (data.success) {
         setOpenTime(data.openTime || "");
@@ -60,7 +59,7 @@ function TableEditlayouts() {
 
   const saveReservationWindow = async () => {
     try {
-      const res = await fetch(`${API_BASE}/api/settings/reservation-window`, {
+      const res = await fetch("http://localhost:5000/api/settings/reservation-window", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -96,14 +95,14 @@ function TableEditlayouts() {
     }
   
     // ดึงข้อมูลปัจจุบัน
-    fetch(`${API_BASE}/api/table_map`)
+    fetch("http://localhost:5000/api/table_map")
       .then((res) => res.json())
       .then((mapResult) => {
         const currentImageUrl = mapResult.success && mapResult.table_maps.length > 0
-          ? `${API_BASE}${mapResult.table_maps[0].image_path}`
+          ? `http://localhost:5000${mapResult.table_maps[0].image_path}`
           : null;
   
-        return fetch(`${API_BASE}/api/table_layout`);
+        return fetch("http://localhost:5000/api/table_layout");
       })
       .then((res) => res.json())
       .then((layoutResult) => {
@@ -136,7 +135,7 @@ function TableEditlayouts() {
         }
   
         // ส่งข้อมูลไปยัง server.js ให้จัดการลบเอง
-        fetch(`${API_BASE}/api/delete_table_data`, {
+        fetch("http://localhost:5000/api/delete_table_data", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -153,7 +152,7 @@ function TableEditlayouts() {
               const imageFormData = new FormData();
               imageFormData.append("image", file);
               uploadPromises.push(
-                fetch(`${API_BASE}/api/table_map`, {
+                fetch("http://localhost:5000/api/table_map", {
                   method: "POST",
                   body: imageFormData,
                 })
@@ -167,14 +166,14 @@ function TableEditlayouts() {
               layoutFormData.append("tname", formattedTname);
               layoutFormData.append("time_required", timeRequired);
               uploadPromises.push(
-                fetch(`${API_BASE}/api/table_layout`, {
+                fetch("http://localhost:5000/api/table_layout", {
                   method: "POST",
                   body: layoutFormData,
                 })
               );
             } else if (timeRequired) {
               uploadPromises.push(
-                fetch(`${API_BASE}/api/table_layout/time-required`, {
+                fetch("http://localhost:5000/api/table_layout/time-required", {
                   method: "PUT",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ time_required: timeRequired })
@@ -186,7 +185,7 @@ function TableEditlayouts() {
           })
           .then(async () => {
             // บันทึกเวลาเปิด/ปิดการจอง (สำหรับผู้ใช้) ก่อน navigate
-            const res = await fetch(`${API_BASE}/api/settings/reservation-window`, {
+            const res = await fetch("http://localhost:5000/api/settings/reservation-window", {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ enabled: true, openTime, closeTime })

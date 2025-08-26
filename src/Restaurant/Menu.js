@@ -7,7 +7,6 @@ import statustableImg from "./img/statustable.png";
 import historyImg from "./img/history.png";
 import QrImg from "./img/Qr.png";
 import QrandtableImg from "./img/111.png";
-import { API_BASE } from "../config";
 
 function Menu() {
   const navigate = useNavigate();
@@ -21,7 +20,7 @@ function Menu() {
 
   const checkTableLayout = async () => {
     try {
-      const response = await fetch(`${API_BASE}/api/table_layout`);
+      const response = await fetch("http://localhost:5000/api/table_layout");
       const result = await response.json();
       if (result.success && result.tables.length > 0) {
         setHasTableLayout(true); // ถ้ามีข้อมูลให้ไปหน้า Table_map

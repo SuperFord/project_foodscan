@@ -4,7 +4,6 @@ import { FaArrowLeft } from "react-icons/fa";
 import { FiHome, FiUser } from "react-icons/fi"; // ไอคอนแบบเดียวกับในภาพ figma
 import Swal from 'sweetalert2';
 import { fetchWithAuth } from './fetchWithAuth';
-import { API_BASE } from "../../config";
 
 function ReserDetail() {
   const location = useLocation();
@@ -17,7 +16,7 @@ function ReserDetail() {
   useEffect(() => {
     //เช็ค token ว่ามีการ login มายัง
     const checkAuthAndData = async () => {
-      const response = await fetchWithAuth("/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
+      const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
       if (!response || !response.ok) {
         // ถ้า token ไม่ valid จะถูก redirect แล้ว ไม่ต้องทำต่อ
         return;
@@ -25,7 +24,7 @@ function ReserDetail() {
 
       //ถ้า token ผ่านแล้ว ค่อยดึงชื่อร้าน
       try {
-        const res = await fetchWithAuth("/api/Nrestaurant");
+        const res = await fetchWithAuth("http://localhost:5000/api/Nrestaurant");
         const data = await res.json();
         setRestaurantName(data.name); // สมมติว่า API ส่ง { name: 'ชื่อร้าน' }
       } catch (error) {
@@ -49,7 +48,7 @@ function ReserDetail() {
       // ดึงสถานะสลิปของผู้ใช้ล่าสุดเพื่อแสดงแบนเนอร์สถานะ
       try {
         const token = localStorage.getItem('token');
-        const resp = await fetch(`${API_BASE}/api/user/payment-slips`, {
+        const resp = await fetch('http://localhost:5000/api/user/payment-slips', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -158,7 +157,7 @@ function ReserDetail() {
         <Link to="/User/Menu" className="flex-1 flex justify-center items-center">
           <FiHome className="text-3xl text-gray-400 hover:text-white transition" />
         </Link>
-        <Link to="/User/Menu/Setting" className="flex-1 flex justify_center items-center">
+        <Link to="/User/Menu/Setting" className="flex-1 flex justify-center items-center">
           <FiUser className="text-3xl text-gray-400 hover:text-white transition" />
         </Link>
       </div>

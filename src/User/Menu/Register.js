@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash , FaArrowLeft } from "react-icons/fa";
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { API_BASE } from "../../config";
 
 function Register() {
   const navigate = useNavigate();
@@ -97,7 +96,7 @@ function Register() {
     }
   
     try {
-      const response = await fetch(`${API_BASE}/api/register`, {
+      const response = await fetch("http://localhost:5000/api/register", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, phone, password }),
@@ -159,7 +158,7 @@ function Register() {
     const otp = otpInput.join("");
 
     try {
-      const response = await fetch(`${API_BASE}/api/verify-otp`, {
+      const response = await fetch("http://localhost:5000/api/verify-otp", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, otp }),
@@ -196,7 +195,7 @@ function Register() {
   const handleResendOtp = async () => {
     if (resendCooldown > 0) return;
     try {
-      const response = await fetch(`${API_BASE}/api/resend-otp`, {
+      const response = await fetch("http://localhost:5000/api/resend-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId }),
@@ -288,10 +287,10 @@ function Register() {
 
   //Form สมัครสมาชิก
   return (
-    <div className="w-full h-screen flex flex_col items_center">
-      <div className="full flex items_center justify_center p-14 text_white gap-10">
-        <Link to="/User/" className="w-40 text_center text-xl font-bold text-gray-400 hover:text-yellow-500">ล็อคอิน</Link>
-        <div className="w-40 text_center text-xl font-bold text-yellow-500 border-b-2 border-yellow-500">สมัครสมาชิก</div>
+    <div className="w-full h-screen flex flex-col items-center">
+      <div className="full flex items-center justify-center p-14 text-white gap-10">
+        <Link to="/User/" className="w-40 text-center text-xl font-bold text-gray-400 hover:text-yellow-500">ล็อคอิน</Link>
+        <div className="w-40 text-center text-xl font-bold text-yellow-500 border-b-2 border-yellow-500">สมัครสมาชิก</div>
       </div>
 
       <div className="w-full max-w-md mt-6 px-10 rounded">
