@@ -1,4 +1,5 @@
 "use client"
+import { API_BASE } from "../../config";
 
 import { useEffect, useState, useCallback } from "react"
 
@@ -46,7 +47,7 @@ function PaymentSlipManagement() {
         params.append("date", dateFilter)
       }
 
-      const url = `http://localhost:5000/api/payment-slips?${params}`
+      const url = `${API_BASE}/api/payment-slips?${params}`
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -80,7 +81,7 @@ function PaymentSlipManagement() {
   const updateSlipStatus = async (slipId, status, note = "") => {
     setUpdating(slipId)
     try {
-      const response = await fetch(`http://localhost:5000/api/payment-slips/${slipId}/status`, {
+      const response = await fetch(`${API_BASE}/api/payment-slips/${slipId}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -549,7 +550,7 @@ function PaymentSlipManagement() {
                   <h3 className="text-lg font-medium mb-3">สลิปการจ่ายเงิน</h3>
                   <div className="border rounded-lg overflow-hidden">
                     <img
-                      src={`http://localhost:5000${selectedSlip.slip_path}`}
+                      src={`${API_BASE}${selectedSlip.slip_path}`}
                       alt="Payment slip"
                       className="w-full max-w-md mx-auto"
                       onError={(e) => {

@@ -4,6 +4,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import TimePicker from 'react-time-picker';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
+import { API_BASE } from "../../config";
 
 function ReserEdit() {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ function ReserEdit() {
     // ดึงข้อมูลชื่อ-สกุลจากฐานข้อมูลโดยใช้ token
     const fetchUserData = async () => {
         try {
-          const response = await fetch("http://localhost:5000/api/user", {
+          const response = await fetch(`${API_BASE}/api/user`, {
             method: "GET",
             headers: {
               "Authorization": `Bearer ${token}`,  // ส่ง token ไปใน header
@@ -82,7 +83,7 @@ function ReserEdit() {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/reseredit", {
+      const response = await fetch(`${API_BASE}/api/reseredit`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

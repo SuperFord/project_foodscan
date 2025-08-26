@@ -2,6 +2,7 @@ import { React, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaPlus, FaCog } from "react-icons/fa";
 import Switch from "react-switch";
+import { API_BASE } from "../config";
 
 export default function ListFood() {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ export default function ListFood() {
 
   const fetchMenus = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/menus");
+      const response = await fetch(`${API_BASE}/api/menus`);
       const result = await response.json();
       if (result.success) {
         // จัดเรียงเมนูให้เมนูที่ "มีสินค้า" (available = true) ขึ้นมาก่อน
@@ -36,7 +37,7 @@ export default function ListFood() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/categories/");
+      const response = await fetch(`${API_BASE}/api/categories/`);
       const result = await response.json();
       if (result.success) {
         setCategories([{ name: "รายการอาหารทั้งหมด" }, ...result.categories]);
@@ -49,7 +50,7 @@ export default function ListFood() {
   const handleDelete = async (id) => {
     if (window.confirm("คุณต้องการลบเมนูนี้หรือไม่?")) {
       try {
-        const response = await fetch(`http://localhost:5000/api/menus/${id}`, {
+        const response = await fetch(`${API_BASE}/api/menus/${id}`, {
           method: "DELETE",
         });
         const result = await response.json();
@@ -68,7 +69,7 @@ export default function ListFood() {
 
   const toggleStatus = async (id, status) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/menus/${id}/status`, {
+      const response = await fetch(`${API_BASE}/api/menus/${id}/status`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ available: !status }),
@@ -101,15 +102,15 @@ export default function ListFood() {
   return (
     <div className="w-full h-screen bg-white">
       {/* Header */}
-      <div className="flex items-center justify-between bg-yellow-400 p-4 text-white">
+      <div className="flex items_center justify_between bg-yellow-400 p-4 text_white">
         <FaArrowLeft className="text-2xl cursor-pointer ml-4" onClick={() => navigate("/Restaurant/Menu")} />
-        <h1 className="flex-grow text-3xl font-bold text-center p-2">จัดการรายการอาหาร</h1>
+        <h1 className="flex-grow text-3xl font-bold text_center p-2">จัดการรายการอาหาร</h1>
         <FaPlus className="text-2xl cursor-pointer ml-4" onClick={() => navigate("/Restaurant/Menu/Listfoodadd")} />
       </div>
 
       {/* Food List */}
       <div className="p-4">
-        <h2 className="text-lg font-bold text-black">หมวดหมู่</h2>
+        <h2 className="text-lg font-bold text_black">หมวดหมู่</h2>
           <div className="flex items-center space-x-2 overflow-x-auto px-4 py-2 bg-gray-100">
           {categories.slice(0, 12).map((cat, index) => (
             <button
@@ -125,7 +126,7 @@ export default function ListFood() {
           {categories.length > 5 && (
             <button
               onClick={() => setShowAllCategories(true)}
-              className="px-3 py-1 bg-white border rounded-full text-gray-700"
+              className="px-3 py-1 bg_white border rounded_full text_gray_700"
             >
               ...
             </button>
@@ -200,7 +201,7 @@ export default function ListFood() {
               {/* แสดงรูปเมนู */}
               <div className="flex items-center space-x-4">
                 <img
-                  src={`http://localhost:5000${menu.image_url}`}
+                  src={`${API_BASE}${menu.image_url}`}
                   alt={menu.name}
                   className="w-20 h-20 object-cover rounded"
                 />

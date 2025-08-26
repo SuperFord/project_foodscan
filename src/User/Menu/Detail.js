@@ -5,6 +5,7 @@ import { FiHome, FiUser } from "react-icons/fi"; // ไอคอนแบบเ�
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2';
 import { fetchWithAuth } from './fetchWithAuth';
+import { API_BASE } from "../../config";
 
 function Detail() {
   const [reservation, setReservation] = useState(null);
@@ -17,7 +18,7 @@ function Detail() {
   useEffect(() => {
     const checkAuthAndData = async () => {
       // 1. ตรวจสอบ token ก่อน
-      const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
+      const response = await fetchWithAuth("/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
       if (!response || !response.ok) {
         // ถ้า token ไม่ valid จะถูก redirect แล้ว ไม่ต้องทำต่อ
         return;
@@ -26,12 +27,12 @@ function Detail() {
       // 2. ดึงข้อมูลร้าน และการจอง ถ้า token ผ่าน
       try {
         // ดึงชื่อร้าน
-        const restaurantRes = await fetch("http://localhost:5000/api/Nrestaurant");
+        const restaurantRes = await fetch(`${API_BASE}/api/Nrestaurant`);
         const restaurantData = await restaurantRes.json();
         setRestaurantName(restaurantData.name);
 
         // ดึงข้อมูลการจองของวันนี้
-        const res = await fetch("http://localhost:5000/api/reservation/today", {
+        const res = await fetch(`${API_BASE}/api/reservation/today`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -57,7 +58,7 @@ function Detail() {
 
           // ดึงสถานะสลิปของผู้ใช้ล่าสุดเพื่อแสดงแบนเนอร์สถานะ
           try {
-            const resp = await fetch('http://localhost:5000/api/user/payment-slips', {
+            const resp = await fetch(`${API_BASE}/api/user/payment-slips`, {
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json',
@@ -159,7 +160,7 @@ function Detail() {
                     ))}
                     <tr className=" font-semibold">
                       <td className="border border-black px-2 py-1 text-center" colSpan="2">ราคารวม</td>
-                      <td className="border border-black px-2 py-1 text-center">{totalPrice}</td>
+                      <td className="border border_black px-2 py-1 text-center">{totalPrice}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -188,7 +189,7 @@ function Detail() {
 
                   if (result.isConfirmed) {
                     try {
-                      const response = await fetch("http://localhost:5000/api/reservation/cancel", {
+                      const response = await fetch(`${API_BASE}/api/reservation/cancel`, {
                         method: "DELETE",
                         headers: {
                           "Content-Type": "application/json",

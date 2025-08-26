@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import axios from 'axios';
+import { API_BASE } from "../config";
 
 function TableStatus() {
     const navigate = useNavigate();
@@ -16,7 +17,7 @@ function TableStatus() {
 
     const fetchData = async () => {
         try {
-            const resTables = await axios.get("http://localhost:5000/api/table_today");
+            const resTables = await axios.get(`${API_BASE}/api/table_today`);
             if (resTables.data.success) {
                 const sortedTables = resTables.data.tables.sort((a, b) => {
                     // ฟังก์ชันเพื่อดึงชื่อและเลขจากแต่ละแถว
@@ -63,7 +64,7 @@ function TableStatus() {
         setExpanded(tableId);
     
         try {
-            const res = await axios.get(`http://localhost:5000/api/reservation_by_table`, {
+            const res = await axios.get(`${API_BASE}/api/reservation_by_table`, {
                 params: { table: tableName }
             });
     
@@ -134,27 +135,6 @@ function TableStatus() {
                                     <>                                
                                         <div><strong>โต๊ะ:</strong> {reservation && reservation.setable ? `${reservation.setable.replace(',' , ', ' , ' ,')}` : '-'}</div>
                                         <div><strong>ชื่อ:</strong> {reservation.username}</div>
-                                        {/* <div><strong>อีเมล:</strong> {reservation.email}</div>
-                                        <div><strong>เวลาเเละวันที่:</strong> {reservation.time} {reservation.date} </div>
-                                        <div><strong>จำนวนคน:</strong> {reservation.people}</div>
-                                        <div><strong>รายละเอียด:</strong> {reservation.detail || '-'}</div> */}
-                                        {/* รายการอาหาร */}
-                                        {/* <div className="mt-2"><strong>รายการอาหาร :</strong></div>
-                                        {reservation.foodorder && reservation.foodorder.length > 0 ? (
-                                        reservation.foodorder.map((food, idx) => (
-                                            <div
-                                            key={idx}
-                                            className="grid grid-cols-3 gap-2 px-4 py-1 text-2sm"
-                                            >
-                                            <div className="text-left">{food.name}</div>
-                                            <div className="text-center">{food.quantity}</div>
-                                            <div className="text-right">{food.totalpq}</div>
-                                            </div>
-                                        ))
-                                        ) : (
-                                        <div className="px-4 text-gray-400">ไม่มีรายการอาหาร</div>
-                                        )}
-                                        <div className="flex justify-end mt-2 font-bold">ราคารวม {reservation.total} บาท</div> */}
                                     </>
                                 ) : (
                                     <div className="text-gray-500 mt-2">ไม่มีข้อมูลการจอง</div>
