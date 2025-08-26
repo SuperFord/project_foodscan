@@ -1,4 +1,5 @@
 import React , { useState , useEffect} from 'react';
+import { API_BASE } from "../../config";
 import { useLocation, useNavigate , Link } from 'react-router-dom';
 import { FaArrowLeft } from "react-icons/fa";
 import { FiHome, FiUser } from "react-icons/fi"; // ไอคอนแบบเดียวกับในภาพ figma
