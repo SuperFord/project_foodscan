@@ -39,7 +39,7 @@ function PaymentQR() {
 
   const fetchQRSettings = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/settings/qr-payment")
+      const response = await fetch(`${API_BASE}/api/settings/qr-payment`)
       const data = await response.json()
 
       console.log("QR Settings fetched:", data)
@@ -93,7 +93,7 @@ function PaymentQR() {
 
     try {
       const token = localStorage.getItem("token")
-      const response = await fetch("http://localhost:5000/api/upload-payment-slip", {
+      const response = await fetch(`${API_BASE}/api/upload-payment-slip`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

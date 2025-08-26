@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { API_BASE } from "../../config";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
@@ -16,7 +17,7 @@ function TableStatus() {
 
     const fetchData = async () => {
         try {
-            const resTables = await axios.get("http://localhost:5000/api/table_today");
+            const resTables = await axios.get(`${API_BASE}/api/table_today`);
             if (resTables.data.success) {
                 const sortedTables = resTables.data.tables.sort((a, b) => {
                     // ฟังก์ชันเพื่อดึงชื่อและเลขจากแต่ละแถว
@@ -63,7 +64,7 @@ function TableStatus() {
         setExpanded(tableId);
     
         try {
-            const res = await axios.get(`http://localhost:5000/api/reservation_by_table`, {
+            const res = await axios.get(`${API_BASE}/api/reservation_by_table`, {
                 params: { table: tableName }
             });
     

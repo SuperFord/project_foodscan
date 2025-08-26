@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { API_BASE } from "../../config";
 import { useNavigate, Link } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
@@ -15,7 +16,7 @@ function History() {
   useEffect(() => {
     // ตรวจสอบ Token
     const checkToken = async () => {
-      const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);
+      const response = await fetchWithAuth("/api/checkToken", {}, navigate);
       if (!response) {
         return;
       }
@@ -27,7 +28,7 @@ function History() {
     // ดึงประวัติการจองและเรียงจากใหม่ไปเก่า
     const fetchHistory = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/user/history', {
+        const res = await fetch(`${API_BASE}/api/user/history`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,

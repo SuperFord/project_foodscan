@@ -6,6 +6,7 @@ import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
 import { fetchWithAuth } from './fetchWithAuth';
 import Swal from 'sweetalert2';
+import { API_BASE } from '../../config';
 
 function Reservation() {
   const navigate = useNavigate();
@@ -31,14 +32,14 @@ function Reservation() {
   // ดึงข้อมูลชื่อ-สกุลจากฐานข้อมูลโดยใช้ token
   useEffect(() => {
     const checkAuthAndData = async () => {
-      const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);  
+      const response = await fetchWithAuth("/api/checkToken", {}, navigate);  
       if (!response || !response.ok) {
         // ถ้า token ไม่ valid จะถูก redirect แล้ว ไม่ต้องทำต่อ
         return;
       }
   
       // ✅ token valid แล้ว ค่อย fetch user data
-      const userRes = await fetchWithAuth("http://localhost:5000/api/user");
+      const userRes = await fetchWithAuth("/api/user");
       if (userRes) {
         const data = await userRes.json();
         if (data.success) {
@@ -73,7 +74,7 @@ function Reservation() {
   useEffect(() => {
   const fetchTimeRequired = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/table_layout");
+      const res = await fetch(`${API_BASE}/api/table_layout`);
       const data = await res.json();
 
       if (data.success) {
@@ -123,7 +124,7 @@ function Reservation() {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/reservation", {
+      const response = await fetch(`${API_BASE}/api/reservation`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

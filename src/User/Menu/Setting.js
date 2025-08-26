@@ -27,7 +27,7 @@ function Setting() {
 
   useEffect(() => {
     const checkToken = async () => {
-          const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
+          const response = await fetchWithAuth("/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
           if (!response) {
             // fetchWithAuth จะ redirect ไป /User ให้อยู่แล้วถ้า token หมดอายุ
             return;

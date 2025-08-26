@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE } from "../../config";
 import { FaArrowLeft, FaShoppingCart } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -28,7 +29,7 @@ function ReserFood() {
 
   useEffect(() => {
     const checkAuthAndData = async () => {
-      const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);
+      const response = await fetchWithAuth("/api/checkToken", {}, navigate);
   
       if (!response || !response.ok) {
         // fetchWithAuth จะ redirect ไป /User ให้อยู่แล้วหาก token หมดอายุ
@@ -79,7 +80,7 @@ function ReserFood() {
       const token = localStorage.getItem('token');  // ดึง JWT token จาก localStorage
       try {
         // ดึงข้อมูลร้าน
-        const restaurantResponse = await fetch("http://localhost:5000/api/Nrestaurant", {
+        const restaurantResponse = await fetch(`${API_BASE}/api/Nrestaurant`, {
           headers: {
             "Authorization": `Bearer ${token}`,
           },
@@ -88,7 +89,7 @@ function ReserFood() {
         setRestaurantData({ name: restaurantData.name, description: restaurantData.description });
   
         // ดึงเมนู
-        const menuResponse = await fetch("http://localhost:5000/api/menus", {
+        const menuResponse = await fetch(`${API_BASE}/api/menus`, {
           headers: {
             "Authorization": `Bearer ${token}`,
           },
@@ -260,7 +261,7 @@ function ReserFood() {
               {filteredMenus.map((menu, index) => (
                 <div key={index} className="flex items-start space-x-4 pb-4">
                   <img
-                    src={`http://localhost:5000${menu.image_url}`}
+                    src={`${API_BASE}${menu.image_url}`}
                     alt={menu.name}
                     className="w-20 h-20 object-cover rounded"
                   />
@@ -292,7 +293,7 @@ function ReserFood() {
           <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
             <div className="bg-white rounded-xl p-6 w-80 shadow-xl">
               <img
-                src={`http://localhost:5000${selectedMenu.image_url}`}
+                src={`${API_BASE}${selectedMenu.image_url}`}
                 alt={selectedMenu.name}
                 className="w-full h-48 object-cover rounded-xl mb-4"
               />
@@ -341,7 +342,7 @@ function ReserFood() {
               {cart.map((item, index) => (
                 <div key={index} className="flex items-center mb-4">
                   <img
-                    src={`http://localhost:5000${item.image_url}`}
+                    src={`${API_BASE}${item.image_url}`}
                     alt={item.name}
                     className="w-16 h-16 rounded object-cover mr-4"
                   />

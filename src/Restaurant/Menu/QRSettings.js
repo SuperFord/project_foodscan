@@ -24,7 +24,7 @@ function QRSettings() {
 
   const fetchSettings = useCallback(async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/settings/qr-payment")
+      const response = await fetch(`${API_BASE}/api/settings/qr-payment`)
       const data = await response.json()
 
       console.log("Fetched settings:", data) // Debug log
@@ -73,7 +73,7 @@ function QRSettings() {
 
       console.log("Sending data:", requestData) // Debug log
 
-      const response = await fetch("http://localhost:5000/api/settings/qr-payment", {
+      const response = await fetch(`${API_BASE}/api/settings/qr-payment`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

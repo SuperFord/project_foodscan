@@ -1,4 +1,5 @@
 import { React, useEffect, useState } from "react";
+import { API_BASE } from "../../config";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaPlus, FaCog } from "react-icons/fa";
 import Switch from "react-switch";
@@ -20,7 +21,7 @@ export default function ListFood() {
 
   const fetchMenus = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/menus");
+      const response = await fetch(`${API_BASE}/api/menus`);
       const result = await response.json();
       if (result.success) {
         // จัดเรียงเมนูให้เมนูที่ "มีสินค้า" (available = true) ขึ้นมาก่อน
@@ -36,7 +37,7 @@ export default function ListFood() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/categories/");
+      const response = await fetch(`${API_BASE}/api/categories/`);
       const result = await response.json();
       if (result.success) {
         setCategories([{ name: "รายการอาหารทั้งหมด" }, ...result.categories]);
@@ -49,7 +50,7 @@ export default function ListFood() {
   const handleDelete = async (id) => {
     if (window.confirm("คุณต้องการลบเมนูนี้หรือไม่?")) {
       try {
-        const response = await fetch(`http://localhost:5000/api/menus/${id}`, {
+        const response = await fetch(`${API_BASE}/api/menus/${id}`, {
           method: "DELETE",
         });
         const result = await response.json();
@@ -68,7 +69,7 @@ export default function ListFood() {
 
   const toggleStatus = async (id, status) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/menus/${id}/status`, {
+      const response = await fetch(`${API_BASE}/api/menus/${id}/status`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ available: !status }),
@@ -200,7 +201,7 @@ export default function ListFood() {
               {/* แสดงรูปเมนู */}
               <div className="flex items-center space-x-4">
                 <img
-                  src={`http://localhost:5000${menu.image_url}`}
+                  src={`${API_BASE}${menu.image_url}`}
                   alt={menu.name}
                   className="w-20 h-20 object-cover rounded"
                 />

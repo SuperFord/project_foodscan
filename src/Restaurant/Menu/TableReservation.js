@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { API_BASE } from "../../config";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft , FaTrash } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
@@ -19,7 +20,7 @@ function TableReser() {
       const today = new Date();
       const formattedDate = today.toISOString().split('T')[0]; // yyyy-mm-dd
   
-      const res = await axios.get('http://localhost:5000/api/all_reservations_today', {
+      const res = await axios.get(`${API_BASE}/api/all_reservations_today`, {
         params: { date: formattedDate }
       });
   
@@ -48,7 +49,7 @@ function TableReser() {
   
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:5000/api/delete_reservation/${id}`);
+        await axios.delete(`${API_BASE}/api/delete_reservation/${id}`);
         Swal.fire({
           title: 'ลบแล้ว!',
           text: 'การจองถูกลบเรียบร้อย',

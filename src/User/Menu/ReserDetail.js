@@ -16,7 +16,7 @@ function ReserDetail() {
   useEffect(() => {
     //เช็ค token ว่ามีการ login มายัง
     const checkAuthAndData = async () => {
-      const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
+      const response = await fetchWithAuth("/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
       if (!response || !response.ok) {
         // ถ้า token ไม่ valid จะถูก redirect แล้ว ไม่ต้องทำต่อ
         return;
@@ -24,7 +24,7 @@ function ReserDetail() {
 
       //ถ้า token ผ่านแล้ว ค่อยดึงชื่อร้าน
       try {
-        const res = await fetchWithAuth("http://localhost:5000/api/Nrestaurant");
+        const res = await fetchWithAuth("/api/Nrestaurant");
         const data = await res.json();
         setRestaurantName(data.name); // สมมติว่า API ส่ง { name: 'ชื่อร้าน' }
       } catch (error) {
@@ -48,7 +48,7 @@ function ReserDetail() {
       // ดึงสถานะสลิปของผู้ใช้ล่าสุดเพื่อแสดงแบนเนอร์สถานะ
       try {
         const token = localStorage.getItem('token');
-        const resp = await fetch('http://localhost:5000/api/user/payment-slips', {
+        const resp = await fetch(`${API_BASE}/api/user/payment-slips`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

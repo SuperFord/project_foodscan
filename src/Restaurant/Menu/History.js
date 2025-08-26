@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE } from "../../config";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaPlus, FaCog } from "react-icons/fa";
 
@@ -8,7 +9,7 @@ function History() {
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/restaurant/history') // แก้ endpoint ให้ตรงกับ backend ของคุณ
+    fetch(`${API_BASE}/api/restaurant/history`)
       .then(res => res.json())
       .then(data => setReservations(data))
       .catch(err => console.error(err));
