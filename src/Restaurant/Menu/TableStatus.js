@@ -72,7 +72,7 @@ const TableStatus = () => {
             const token = handleAuth();
             if (!token) return;
 
-            const response = await fetch("http://localhost:5000/api/table_today", {
+            const response = await fetch("/api/table_today", {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -123,7 +123,7 @@ const TableStatus = () => {
             const token = handleAuth();
             if (!token) return;
 
-            const response = await fetch(`http://localhost:5000/api/table_status/${tableId}`, {
+            const response = await fetch(`/api/table_status/${tableId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -158,7 +158,7 @@ const TableStatus = () => {
             const token = handleAuth();
             if (!token) return;
 
-            const response = await fetch("http://localhost:5000/api/table_status/all", {
+            const response = await fetch("/api/table_status/all", {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -198,7 +198,7 @@ const TableStatus = () => {
             const token = handleAuth();
             if (!token) return;
 
-            const response = await fetch(`http://localhost:5000/api/reservation_by_table?table=${encodeURIComponent(tableName)}`, {
+            const response = await fetch(`/api/reservation_by_table?table=${encodeURIComponent(tableName)}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,

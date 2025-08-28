@@ -24,7 +24,7 @@ function Login() {
     setErrorMessage('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/restaurant/login', {
+      const response = await fetch('/api/restaurant/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

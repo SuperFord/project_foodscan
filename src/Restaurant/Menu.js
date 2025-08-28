@@ -20,7 +20,7 @@ function Menu() {
 
   const checkTableLayout = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/table_layout");
+      const response = await fetch("/api/table_layout");
       const result = await response.json();
       if (result.success && result.tables.length > 0) {
         setHasTableLayout(true); // ถ้ามีข้อมูลให้ไปหน้า Table_map

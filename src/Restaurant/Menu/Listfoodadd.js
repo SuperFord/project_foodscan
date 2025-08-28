@@ -56,7 +56,7 @@ export default function ListFoodAdd() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/menus", {
+      const response = await fetch("/api/menus", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`
@@ -100,7 +100,7 @@ export default function ListFoodAdd() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/category", {
+      const response = await fetch("/api/category", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -134,7 +134,7 @@ export default function ListFoodAdd() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/categories");
+      const response = await fetch("/api/categories");
       const result = await response.json();
       if (result.success) {
         setCategoryOptions(result.categories);

@@ -21,7 +21,7 @@ export default function ListFood() {
 
   const fetchMenus = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/menus");
+      const response = await fetch("/api/menus");
       if (response.ok) {
         const data = await response.json();
         setMenus(data.menus);
@@ -33,7 +33,7 @@ export default function ListFood() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/categories/");
+      const response = await fetch("/api/categories/");
       const result = await response.json();
       if (result.success) {
         setCategories([{ name: "รายการอาหารทั้งหมด" }, ...result.categories]);
@@ -53,7 +53,7 @@ export default function ListFood() {
           return;
         }
 
-        const response = await fetch(`http://localhost:5000/api/menus/${id}`, {
+        const response = await fetch(`/api/menus/${id}`, {
           method: "DELETE",
           headers: {
             "Authorization": `Bearer ${token}`
@@ -83,7 +83,7 @@ export default function ListFood() {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/api/menus/${id}/status`, {
+      const response = await fetch(`/api/menus/${id}/status`, {
         method: "PUT",
         headers: { 
           "Content-Type": "application/json",
@@ -263,7 +263,7 @@ export default function ListFood() {
               {/* แสดงรูปเมนู */}
               <div className="flex items-center space-x-4">
                 <img
-                  src={`http://localhost:5000${menu.image_url}`}
+                  src={`${process.env.REACT_APP_API_URL?.replace(/\/$/, '') || ''}${menu.image_url}`}
                   alt={menu.name}
                   className="w-20 h-20 object-cover rounded"
                 />

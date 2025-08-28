@@ -36,7 +36,7 @@ function ForgetPassword() {
       setPasswordMismatch(false); // รีเซ็ตเมื่อรหัสผ่านตรงกัน
 
       try {
-        const response = await fetch('http://localhost:5000/forget-password', {
+        const response = await fetch('/forget-password', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

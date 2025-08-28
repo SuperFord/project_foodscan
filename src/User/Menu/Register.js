@@ -96,7 +96,7 @@ function Register() {
     }
   
     try {
-      const response = await fetch("http://localhost:5000/api/register", {
+      const response = await fetch("/api/register", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, phone, password }),
@@ -158,7 +158,7 @@ function Register() {
     const otp = otpInput.join("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/verify-otp", {
+      const response = await fetch("/api/verify-otp", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, otp }),
@@ -195,7 +195,7 @@ function Register() {
   const handleResendOtp = async () => {
     if (resendCooldown > 0) return;
     try {
-      const response = await fetch("http://localhost:5000/api/resend-otp", {
+      const response = await fetch("/api/resend-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId }),

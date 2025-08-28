@@ -37,7 +37,7 @@ function TableLayouts() {
       imageFormData.append("image", file);
   
       try {
-        const imageResponse = await fetch("http://localhost:5000/api/table_map", {
+        const imageResponse = await fetch("/api/table_map", {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${token}`
@@ -72,7 +72,7 @@ function TableLayouts() {
         layoutFormData.append("tname", formattedTname);
       }
   
-      const layoutResponse = await fetch("http://localhost:5000/api/table_layout", {
+      const layoutResponse = await fetch("/api/table_layout", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`

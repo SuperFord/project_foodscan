@@ -22,7 +22,7 @@ function Profile() {
   useEffect(() => {
     // เรียก API ดึง Token
     const checkToken = async () => {
-      const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
+      const response = await fetchWithAuth("/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
       if (!response) {
         // fetchWithAuth จะ redirect ไป /User ให้อยู่แล้วถ้า token หมดอายุ
         return;
@@ -35,7 +35,7 @@ function Profile() {
     // เรียก API ดึงข้อมูลผู้ใช้
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/profile", {
+        const response = await fetch("/api/profile", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`, // ส่ง token ไปใน header
@@ -92,7 +92,7 @@ function Profile() {
     setError("");
   
     try {
-      const response = await fetch("http://localhost:5000/api/profile", {
+      const response = await fetch("/api/profile", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

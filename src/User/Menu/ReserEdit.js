@@ -33,7 +33,7 @@ function ReserEdit() {
     // ดึงข้อมูลชื่อ-สกุลจากฐานข้อมูลโดยใช้ token
     const fetchUserData = async () => {
         try {
-          const response = await fetch("http://localhost:5000/api/user", {
+          const response = await fetch("/api/user", {
             method: "GET",
             headers: {
               "Authorization": `Bearer ${token}`,  // ส่ง token ไปใน header
@@ -82,7 +82,7 @@ function ReserEdit() {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/reseredit", {
+      const response = await fetch("/api/reseredit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

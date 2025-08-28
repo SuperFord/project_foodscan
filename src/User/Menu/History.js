@@ -15,7 +15,7 @@ function History() {
   useEffect(() => {
     // ตรวจสอบ Token
     const checkToken = async () => {
-      const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);
+      const response = await fetchWithAuth("/api/checkToken", {}, navigate);
       if (!response) {
         return;
       }
@@ -27,7 +27,7 @@ function History() {
     // ดึงประวัติการจองและเรียงจากใหม่ไปเก่า
     const fetchHistory = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/user/history', {
+        const res = await fetch('/api/user/history', {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,

@@ -12,7 +12,7 @@ function History() {
     const token = localStorage.getItem('restaurantToken');
     const load = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/restaurant/history', {
+        const res = await fetch('/api/restaurant/history', {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         });
         if (res.status === 401 || res.status === 403) {

@@ -23,14 +23,14 @@ export default function ListFoodEdit() {
 
   const fetchMenuData = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/menus/${id}`);
+      const response = await fetch(`/api/menus/${id}`);
       const result = await response.json();
       if (result.success) {
         setMenuName(result.menu.name);
         setPrice(result.menu.price);
         setDescription(result.menu.description);
         setCategory(result.menu.category);
-        setImageUrl(`http://localhost:5000${result.menu.image_url}`);
+        setImageUrl(`${process.env.REACT_APP_API_URL?.replace(/\/$/, '') || ''}${result.menu.image_url}`);
       } else {
         console.error("ไม่พบเมนู");
       }
@@ -90,7 +90,7 @@ export default function ListFoodEdit() {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/menus/${id}`, {
+      const response = await fetch(`/api/menus/${id}`, {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${token}`
@@ -119,7 +119,7 @@ export default function ListFoodEdit() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/categories");
+      const response = await fetch("/api/categories");
       const data = await response.json();
       if (data.success) {
         const names = data.categories.map(cat => cat.name);
@@ -143,7 +143,7 @@ export default function ListFoodEdit() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/category", {
+      const response = await fetch("/api/category", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
