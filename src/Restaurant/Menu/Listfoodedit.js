@@ -1,3 +1,4 @@
+import { buildUrl } from '../../utils/api';
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
@@ -23,7 +24,7 @@ export default function ListFoodEdit() {
 
   const fetchMenuData = async () => {
     try {
-      const response = await fetch(`/api/menus/${id}`);
+      const response = await fetch(buildUrl(`/api/menus/${id}`));
       const result = await response.json();
       if (result.success) {
         setMenuName(result.menu.name);
@@ -90,7 +91,7 @@ export default function ListFoodEdit() {
     }
 
     try {
-      const response = await fetch(`/api/menus/${id}`, {
+      const response = await fetch(buildUrl(`/api/menus/${id}`), {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${token}`
@@ -119,7 +120,7 @@ export default function ListFoodEdit() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch("/api/categories");
+      const response = await fetch(buildUrl('/api/categories'));
       const data = await response.json();
       if (data.success) {
         const names = data.categories.map(cat => cat.name);
@@ -143,7 +144,7 @@ export default function ListFoodEdit() {
     }
 
     try {
-      const response = await fetch("/api/category", {
+      const response = await fetch(buildUrl('/api/category'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

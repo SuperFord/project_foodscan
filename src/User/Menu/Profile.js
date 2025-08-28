@@ -1,3 +1,4 @@
+import { buildUrl } from '../../utils/api';
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -35,7 +36,7 @@ function Profile() {
     // เรียก API ดึงข้อมูลผู้ใช้
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch("/api/profile", {
+        const response = await fetch(buildUrl('/api/profile'), {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`, // ส่ง token ไปใน header
@@ -92,7 +93,7 @@ function Profile() {
     setError("");
   
     try {
-      const response = await fetch("/api/profile", {
+      const response = await fetch(buildUrl('/api/profile'), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

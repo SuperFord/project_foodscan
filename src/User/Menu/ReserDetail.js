@@ -1,3 +1,4 @@
+import { buildUrl } from '../../utils/api';
 import React , { useState , useEffect} from 'react';
 import { useLocation, useNavigate , Link } from 'react-router-dom';
 import { FaArrowLeft } from "react-icons/fa";
@@ -48,7 +49,7 @@ function ReserDetail() {
       // ดึงสถานะสลิปของผู้ใช้ล่าสุดเพื่อแสดงแบนเนอร์สถานะ
       try {
         const token = localStorage.getItem('token');
-        const resp = await fetch('/api/user/payment-slips', {
+        const resp = await fetch(buildUrl('/api/user/payment-slips'), {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

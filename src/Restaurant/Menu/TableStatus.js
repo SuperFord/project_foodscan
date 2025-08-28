@@ -1,3 +1,4 @@
+import { buildUrl } from '../../utils/api';
 import React, { useState, useEffect, useCallback } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
 import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io';
@@ -72,7 +73,7 @@ const TableStatus = () => {
             const token = handleAuth();
             if (!token) return;
 
-            const response = await fetch("/api/table_today", {
+            const response = await fetch(buildUrl('/api/table_today'), {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -158,7 +159,7 @@ const TableStatus = () => {
             const token = handleAuth();
             if (!token) return;
 
-            const response = await fetch("/api/table_status/all", {
+            const response = await fetch(buildUrl('/api/table_status/all'), {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,

@@ -1,3 +1,4 @@
+import { buildUrl } from '../../utils/api';
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaUpload } from "react-icons/fa";
@@ -56,7 +57,7 @@ export default function ListFoodAdd() {
     }
 
     try {
-      const response = await fetch("/api/menus", {
+      const response = await fetch(buildUrl('/api/menus'), {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`
@@ -100,7 +101,7 @@ export default function ListFoodAdd() {
     }
 
     try {
-      const response = await fetch("/api/category", {
+      const response = await fetch(buildUrl('/api/category'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -134,7 +135,7 @@ export default function ListFoodAdd() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch("/api/categories");
+      const response = await fetch(buildUrl('/api/categories'));
       const result = await response.json();
       if (result.success) {
         setCategoryOptions(result.categories);

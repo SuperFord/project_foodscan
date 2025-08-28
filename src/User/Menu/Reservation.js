@@ -1,3 +1,4 @@
+import { buildUrl } from '../../utils/api';
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
@@ -73,7 +74,7 @@ function Reservation() {
   useEffect(() => {
   const fetchTimeRequired = async () => {
     try {
-      const res = await fetch("/api/table_layout");
+      const res = await fetch(buildUrl('/api/table_layout'));
       const data = await res.json();
 
       if (data.success) {
@@ -123,7 +124,7 @@ function Reservation() {
     };
 
     try {
-      const response = await fetch("/api/reservation", {
+      const response = await fetch(buildUrl('/api/reservation'), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

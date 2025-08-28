@@ -1,3 +1,4 @@
+import { buildUrl } from '../../utils/api';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaPlus, FaCog } from "react-icons/fa";
@@ -12,7 +13,7 @@ function History() {
     const token = localStorage.getItem('restaurantToken');
     const load = async () => {
       try {
-        const res = await fetch('/api/restaurant/history', {
+        const res = await fetch(buildUrl('/api/restaurant/history'), {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         });
         if (res.status === 401 || res.status === 403) {

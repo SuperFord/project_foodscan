@@ -1,3 +1,4 @@
+import { buildUrl } from '../../utils/api';
 "use client"
 
 import { useEffect, useState } from "react"
@@ -40,7 +41,7 @@ function PaymentQR() {
   const fetchQRSettings = async () => {
     try {
       // ใช้ endpoint สาธารณะสำหรับดึงเลขพร้อมเพย์
-      const response = await fetch("/api/settings/promptpay")
+      const response = await fetch(buildUrl('/api/settings/promptpay'))
       const data = await response.json()
 
       if (data.success) {
@@ -91,7 +92,7 @@ function PaymentQR() {
 
     try {
       const token = localStorage.getItem("token")
-      const response = await fetch("/api/upload-payment-slip", {
+      const response = await fetch(buildUrl('/api/upload-payment-slip'), {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

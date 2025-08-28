@@ -1,3 +1,4 @@
+import { buildUrl } from '../../utils/api';
 import React, { useState, useEffect } from 'react';
 import { FaArrowLeft, FaShoppingCart } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -79,7 +80,7 @@ function ReserFood() {
       const token = localStorage.getItem('token');  // ดึง JWT token จาก localStorage
       try {
         // ดึงข้อมูลร้าน
-        const restaurantResponse = await fetch("/api/Nrestaurant", {
+        const restaurantResponse = await fetch(buildUrl('/api/Nrestaurant'), {
           headers: {
             "Authorization": `Bearer ${token}`,
           },
@@ -88,7 +89,7 @@ function ReserFood() {
         setRestaurantData({ name: restaurantData.name, description: restaurantData.description });
   
         // ดึงเมนู
-        const menuResponse = await fetch("/api/menus", {
+        const menuResponse = await fetch(buildUrl('/api/menus'), {
           headers: {
             "Authorization": `Bearer ${token}`,
           },

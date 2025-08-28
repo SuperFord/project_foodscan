@@ -1,3 +1,4 @@
+import { buildUrl } from '../../utils/api';
 import { React, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaPlus, FaCog } from "react-icons/fa";
@@ -21,7 +22,7 @@ export default function ListFood() {
 
   const fetchMenus = async () => {
     try {
-      const response = await fetch("/api/menus");
+      const response = await fetch(buildUrl('/api/menus'));
       if (response.ok) {
         const data = await response.json();
         setMenus(data.menus);
@@ -33,7 +34,7 @@ export default function ListFood() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch("/api/categories/");
+      const response = await fetch(buildUrl('/api/categories/'));
       const result = await response.json();
       if (result.success) {
         setCategories([{ name: "รายการอาหารทั้งหมด" }, ...result.categories]);
@@ -53,7 +54,7 @@ export default function ListFood() {
           return;
         }
 
-        const response = await fetch(`/api/menus/${id}`, {
+        const response = await fetch(buildUrl(`/api/menus/${id}`), {
           method: "DELETE",
           headers: {
             "Authorization": `Bearer ${token}`
@@ -83,7 +84,7 @@ export default function ListFood() {
         return;
       }
 
-      const response = await fetch(`/api/menus/${id}/status`, {
+      const response = await fetch(buildUrl(`/api/menus/${id}/status`), {
         method: "PUT",
         headers: { 
           "Content-Type": "application/json",

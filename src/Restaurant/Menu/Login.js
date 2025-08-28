@@ -1,3 +1,4 @@
+import { buildUrl } from '../../utils/api';
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
@@ -24,7 +25,7 @@ function Login() {
     setErrorMessage('');
 
     try {
-      const response = await fetch('/api/restaurant/login', {
+      const response = await fetch(buildUrl('/api/restaurant/login'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

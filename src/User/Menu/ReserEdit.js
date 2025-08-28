@@ -1,3 +1,4 @@
+import { buildUrl } from '../../utils/api';
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
@@ -33,7 +34,7 @@ function ReserEdit() {
     // ดึงข้อมูลชื่อ-สกุลจากฐานข้อมูลโดยใช้ token
     const fetchUserData = async () => {
         try {
-          const response = await fetch("/api/user", {
+          const response = await fetch(buildUrl('/api/user'), {
             method: "GET",
             headers: {
               "Authorization": `Bearer ${token}`,  // ส่ง token ไปใน header
@@ -82,7 +83,7 @@ function ReserEdit() {
     };
 
     try {
-      const response = await fetch("/api/reseredit", {
+      const response = await fetch(buildUrl('/api/reseredit'), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

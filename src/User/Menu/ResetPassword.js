@@ -1,3 +1,4 @@
+import { buildUrl } from '../../utils/api';
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaLock } from 'react-icons/fa';
@@ -34,7 +35,7 @@ function ResetPassword() {
     }
 
     try {
-      const res = await fetch('/api/reset-password', {
+      const res = await fetch(buildUrl('/api/reset-password'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, newPassword: trimmedPassword }),

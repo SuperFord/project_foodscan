@@ -1,3 +1,4 @@
+import { buildUrl } from '../../utils/api';
 import React, { useState , useEffect } from 'react';
 import { useNavigate , Link } from "react-router-dom";
 import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
@@ -71,7 +72,7 @@ function ChangePassword() {
       setPasswordMismatch(false); // รีเซ็ตเมื่อรหัสผ่านตรงกัน
     
       try {
-        const response = await fetch("/api/changepassword", {
+        const response = await fetch(buildUrl('/api/changepassword'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -1,3 +1,4 @@
+import { buildUrl } from '../../utils/api';
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from "react-router-dom";
@@ -27,7 +28,7 @@ function History() {
     // ดึงประวัติการจองและเรียงจากใหม่ไปเก่า
     const fetchHistory = async () => {
       try {
-        const res = await fetch('/api/user/history', {
+        const res = await fetch(buildUrl('/api/user/history'), {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,

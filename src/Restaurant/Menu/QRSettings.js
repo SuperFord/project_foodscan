@@ -1,3 +1,4 @@
+import { buildUrl } from '../../utils/api';
 "use client"
 
 import { useEffect, useState, useCallback } from "react"
@@ -25,7 +26,7 @@ function QRSettings() {
   const fetchSettings = useCallback(async () => {
     try {
       const token = localStorage.getItem("restaurantToken")
-      const response = await fetch("/api/settings/qr-payment", {
+      const response = await fetch(buildUrl('/api/settings/qr-payment'), {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       })
       if (response.status === 401 || response.status === 403) {
@@ -79,7 +80,7 @@ function QRSettings() {
       }
 
       const token = localStorage.getItem("restaurantToken")
-      const response = await fetch("/api/settings/qr-payment", {
+      const response = await fetch(buildUrl('/api/settings/qr-payment'), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

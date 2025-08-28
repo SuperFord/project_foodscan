@@ -1,3 +1,4 @@
+import { buildUrl } from '../../utils/api';
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaUpload } from "react-icons/fa";
@@ -37,7 +38,7 @@ function TableLayouts() {
       imageFormData.append("image", file);
   
       try {
-        const imageResponse = await fetch("/api/table_map", {
+        const imageResponse = await fetch(buildUrl('/api/table_map'), {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${token}`
@@ -72,7 +73,7 @@ function TableLayouts() {
         layoutFormData.append("tname", formattedTname);
       }
   
-      const layoutResponse = await fetch("/api/table_layout", {
+      const layoutResponse = await fetch(buildUrl('/api/table_layout'), {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`
