@@ -1,8 +1,8 @@
-import { buildUrl } from '../../utils/api';
 "use client"
 
 import { useEffect, useState, useCallback } from "react"
 import { useNavigate } from "react-router-dom"
+import { buildUrl } from "../../utils/api"
 import { FaArrowLeft, FaSave, FaInfoCircle, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa"
 
 function QRSettings() {
@@ -26,7 +26,7 @@ function QRSettings() {
   const fetchSettings = useCallback(async () => {
     try {
       const token = localStorage.getItem("restaurantToken")
-      const response = await fetch(buildUrl('/api/settings/qr-payment'), {
+      const response = await fetch(buildUrl("/api/settings/qr-payment"), {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       })
       if (response.status === 401 || response.status === 403) {
@@ -80,7 +80,7 @@ function QRSettings() {
       }
 
       const token = localStorage.getItem("restaurantToken")
-      const response = await fetch(buildUrl('/api/settings/qr-payment'), {
+      const response = await fetch(buildUrl("/api/settings/qr-payment"), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

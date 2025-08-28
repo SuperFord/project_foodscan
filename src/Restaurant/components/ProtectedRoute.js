@@ -1,4 +1,3 @@
-import { buildUrl } from '../../utils/api';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,7 +16,7 @@ const ProtectedRoute = ({ children }) => {
       }
 
       try {
-        const response = await fetch(buildUrl('/api/restaurant/verify'), {
+        const response = await fetch('http://localhost:5000/api/restaurant/verify', {
           headers: {
             'Authorization': `Bearer ${token}`
           }

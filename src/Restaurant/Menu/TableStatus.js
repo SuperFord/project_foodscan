@@ -1,5 +1,5 @@
-import { buildUrl } from '../../utils/api';
 import React, { useState, useEffect, useCallback } from 'react';
+import { buildUrl } from "../../utils/api";
 import { FaArrowLeft } from 'react-icons/fa';
 import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
@@ -73,7 +73,7 @@ const TableStatus = () => {
             const token = handleAuth();
             if (!token) return;
 
-            const response = await fetch(buildUrl('/api/table_today'), {
+            const response = await fetch(buildUrl("/api/table_today"), {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -124,7 +124,7 @@ const TableStatus = () => {
             const token = handleAuth();
             if (!token) return;
 
-            const response = await fetch(`/api/table_status/${tableId}`, {
+            const response = await fetch(buildUrl(`/api/table_status/${tableId}`), {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -159,7 +159,7 @@ const TableStatus = () => {
             const token = handleAuth();
             if (!token) return;
 
-            const response = await fetch(buildUrl('/api/table_status/all'), {
+            const response = await fetch(buildUrl("/api/table_status/all"), {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -199,7 +199,7 @@ const TableStatus = () => {
             const token = handleAuth();
             if (!token) return;
 
-            const response = await fetch(`/api/reservation_by_table?table=${encodeURIComponent(tableName)}`, {
+            const response = await fetch(buildUrl(`/api/reservation_by_table?table=${encodeURIComponent(tableName)}`), {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,

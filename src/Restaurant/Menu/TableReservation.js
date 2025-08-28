@@ -4,6 +4,7 @@ import { FaArrowLeft , FaTrash } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import { buildUrl } from "../../utils/api";
 
 function TableReser() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ function TableReser() {
       const today = new Date();
       const formattedDate = today.toISOString().split('T')[0]; // yyyy-mm-dd
   
-      const res = await axios.get(`${(process.env.REACT_APP_API_URL || 'http://localhost:5000').replace(/\/$/, '')}/api/all_reservations_today`, {
+      const res = await axios.get(buildUrl('/api/all_reservations_today'), {
         params: { date: formattedDate }
       });
   
@@ -45,7 +46,7 @@ function TableReser() {
   
     if (result.isConfirmed) {
       try {
-        await axios.delete(`${(process.env.REACT_APP_API_URL || 'http://localhost:5000').replace(/\/$/, '')}/api/delete_reservation/${id}`);
+        await axios.delete(buildUrl(`/api/delete_reservation/${id}`));
         Swal.fire({
           title: 'ลบแล้ว!',
           text: 'การจองถูกลบเรียบร้อย',

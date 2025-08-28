@@ -1,5 +1,5 @@
-import { buildUrl } from '../../utils/api';
 import React, { useEffect, useState } from "react";
+import { buildUrl } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 
@@ -20,14 +20,14 @@ export default function Table_map() {
   const fetchTableData = async () => {
     try {
       // ดึงข้อมูลรูปแผนผังโต๊ะ
-      const mapResponse = await fetch(buildUrl('/api/table_map'));
+      const mapResponse = await fetch(buildUrl("/api/table_map"));
       const mapResult = await mapResponse.json();
       if (mapResult.success && mapResult.table_maps.length > 0) {
-        setImageUrl(`${process.env.REACT_APP_API_URL?.replace(/\/$/, '') || ''}${mapResult.table_maps[0].image_path}`);
+        setImageUrl(buildUrl(mapResult.table_maps[0].image_path));
       }
 
       // ดึงข้อมูลโต๊ะจาก table_layout
-      const tableResponse = await fetch(buildUrl('/api/table_layout'));
+      const tableResponse = await fetch(buildUrl("/api/table_layout"));
       const tableResult = await tableResponse.json();
       if (tableResult.success) {
         setTables(tableResult.tables); // ✅ เก็บทั้ง object
@@ -42,7 +42,7 @@ export default function Table_map() {
 
   const fetchReservationWindow = async () => {
     try {
-      const res = await fetch(buildUrl('/api/settings/reservation-window'));
+      const res = await fetch(buildUrl("/api/settings/reservation-window"));
       const data = await res.json();
       if (data.success) {
         setOpenTime(data.openTime || "");

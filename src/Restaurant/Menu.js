@@ -1,5 +1,5 @@
-import { buildUrl } from '../utils/api';
 import React, { useEffect, useState } from 'react';
+import { buildUrl } from "../utils/api";
 import { Link, useNavigate } from "react-router-dom";
 import menuImg from "./img/menu.png";
 import tableImg from "./img/table.png";
@@ -21,7 +21,7 @@ function Menu() {
 
   const checkTableLayout = async () => {
     try {
-      const response = await fetch(buildUrl('/api/table_layout'));
+      const response = await fetch(buildUrl("/api/table_layout"));
       const result = await response.json();
       if (result.success && result.tables.length > 0) {
         setHasTableLayout(true); // ถ้ามีข้อมูลให้ไปหน้า Table_map

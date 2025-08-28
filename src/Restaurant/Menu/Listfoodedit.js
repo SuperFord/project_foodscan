@@ -1,5 +1,5 @@
-import { buildUrl } from '../../utils/api';
 import React, { useEffect, useState } from "react";
+import { buildUrl } from "../../utils/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 
@@ -31,7 +31,7 @@ export default function ListFoodEdit() {
         setPrice(result.menu.price);
         setDescription(result.menu.description);
         setCategory(result.menu.category);
-        setImageUrl(`${process.env.REACT_APP_API_URL?.replace(/\/$/, '') || ''}${result.menu.image_url}`);
+        setImageUrl(buildUrl(result.menu.image_url));
       } else {
         console.error("ไม่พบเมนู");
       }
@@ -120,7 +120,7 @@ export default function ListFoodEdit() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(buildUrl('/api/categories'));
+      const response = await fetch(buildUrl("/api/categories"));
       const data = await response.json();
       if (data.success) {
         const names = data.categories.map(cat => cat.name);
@@ -144,7 +144,7 @@ export default function ListFoodEdit() {
     }
 
     try {
-      const response = await fetch(buildUrl('/api/category'), {
+      const response = await fetch(buildUrl("/api/category"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

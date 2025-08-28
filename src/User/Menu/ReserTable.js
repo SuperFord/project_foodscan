@@ -4,7 +4,6 @@ import { FaArrowLeft } from "react-icons/fa";
 import Select from "react-select";
 import Swal from 'sweetalert2';
 import { fetchWithAuth } from './fetchWithAuth';
-import { buildUrl } from '../../utils/api';
 
 export default function ReserTable() {
   const navigate = useNavigate();
@@ -21,12 +20,12 @@ export default function ReserTable() {
 
   const fetchTableData = useCallback(async () => {
     try {
-      const mapResponse = await fetch(buildUrl('/api/table_map'));
+      const mapResponse = await fetch("http://localhost:5000/api/table_map");
       const mapResult = await mapResponse.json();
       if (mapResult.success && mapResult.table_maps.length > 0) {
-        setImageUrl(`${process.env.REACT_APP_API_URL?.replace(/\/$/, '') || ''}${mapResult.table_maps[0].image_path}`);
+        setImageUrl(`http://localhost:5000${mapResult.table_maps[0].image_path}`);
       }
-      const tableResponse = await fetch(buildUrl('/api/Rtable_layout'));
+      const tableResponse = await fetch("http://localhost:5000/api/Rtable_layout");
       const tableResult = await tableResponse.json();
       if (tableResult.success && Array.isArray(tableResult.tables)) {
         // console.log("Table Result: ", tableResult.tables);
@@ -47,7 +46,7 @@ export default function ReserTable() {
 
   const fetchReservationWindow = async () => {
     try {
-      const res = await fetch(buildUrl('/api/settings/reservation-window'));
+      const res = await fetch("http://localhost:5000/api/settings/reservation-window");
       const data = await res.json();
       if (data.success) {
         setReservationEnabled(Boolean(data.enabled));
@@ -124,7 +123,7 @@ export default function ReserTable() {
   
     //เช็ค token ว่ามีการ login มายัง
     const checkToken = async () => {
-      const response = await fetchWithAuth("/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
+      const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
         if (!response) {
           // fetchWithAuth จะ redirect ไป /User ให้อยู่แล้วถ้า token หมดอายุ
           return;
@@ -137,7 +136,7 @@ export default function ReserTable() {
 
     const checkExistingReservation = async () => {
       try {
-        const res = await fetch(buildUrl('/api/reservation/today'), {
+        const res = await fetch("http://localhost:5000/api/reservation/today", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,

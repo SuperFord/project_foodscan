@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react"
 import { useNavigate } from "react-router-dom"
+import { buildUrl } from "../../utils/api"
 
 // CSS for animations
 const modalStyles = `
@@ -104,7 +105,7 @@ function PaymentSlipManagement() {
         params.append("date", dateFilter)
       }
 
-      const url = `/api/payment-slips?${params}`
+      const url = buildUrl(`/api/payment-slips?${params}`)
       const token = localStorage.getItem("restaurantToken")
       const response = await fetch(url, {
         method: "GET",
@@ -139,7 +140,7 @@ function PaymentSlipManagement() {
     setUpdating(slipId)
     try {
       const token = localStorage.getItem("restaurantToken")
-      const response = await fetch(`/api/payment-slips/${slipId}/status`, {
+      const response = await fetch(buildUrl(`/api/payment-slips/${slipId}/status`), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -648,7 +649,7 @@ function PaymentSlipManagement() {
                   <h3 className="text-lg font-medium mb-3">สลิปการจ่ายเงิน</h3>
                   <div className="border rounded-lg overflow-hidden">
                     <img
-                      src={`${process.env.REACT_APP_API_URL?.replace(/\/$/, '') || ''}${selectedSlip.slip_path}`}
+                      src={buildUrl(selectedSlip.slip_path)}
                       alt="Payment slip"
                       className="w-full max-w-md mx-auto"
                       onError={(e) => {

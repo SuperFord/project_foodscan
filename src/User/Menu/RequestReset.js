@@ -1,4 +1,3 @@
-import { buildUrl } from '../../utils/api';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaEnvelope } from 'react-icons/fa';
@@ -15,7 +14,7 @@ function RequestReset() {
     }
 
     try {
-      const res = await fetch(buildUrl('/api/request-reset-password'), {
+      const res = await fetch('http://localhost:5000/api/request-reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),

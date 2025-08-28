@@ -1,5 +1,5 @@
-import { buildUrl } from '../../utils/api';
 import { React, useEffect, useState } from "react";
+import { buildUrl } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaPlus, FaCog } from "react-icons/fa";
 import Switch from "react-switch";
@@ -22,7 +22,7 @@ export default function ListFood() {
 
   const fetchMenus = async () => {
     try {
-      const response = await fetch(buildUrl('/api/menus'));
+      const response = await fetch(buildUrl("/api/menus"));
       if (response.ok) {
         const data = await response.json();
         setMenus(data.menus);
@@ -34,7 +34,7 @@ export default function ListFood() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(buildUrl('/api/categories/'));
+      const response = await fetch(buildUrl("/api/categories/"));
       const result = await response.json();
       if (result.success) {
         setCategories([{ name: "รายการอาหารทั้งหมด" }, ...result.categories]);
@@ -264,7 +264,7 @@ export default function ListFood() {
               {/* แสดงรูปเมนู */}
               <div className="flex items-center space-x-4">
                 <img
-                  src={`${process.env.REACT_APP_API_URL?.replace(/\/$/, '') || ''}${menu.image_url}`}
+                  src={buildUrl(menu.image_url)}
                   alt={menu.name}
                   className="w-20 h-20 object-cover rounded"
                 />

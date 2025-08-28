@@ -1,4 +1,3 @@
-import { buildUrl } from '../../utils/api';
 import React, { useState , useEffect } from 'react';
 import { useNavigate , Link } from "react-router-dom";
 import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
@@ -20,7 +19,7 @@ function ChangePassword() {
     useEffect(() => {
       // เรียก API ดึง Token
       const checkToken = async () => {
-        const response = await fetchWithAuth("/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
+        const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
         if (!response) {
           // fetchWithAuth จะ redirect ไป /User ให้อยู่แล้วถ้า token หมดอายุ
           return;
@@ -72,7 +71,7 @@ function ChangePassword() {
       setPasswordMismatch(false); // รีเซ็ตเมื่อรหัสผ่านตรงกัน
     
       try {
-        const response = await fetch(buildUrl('/api/changepassword'), {
+        const response = await fetch("http://localhost:5000/api/changepassword", {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
