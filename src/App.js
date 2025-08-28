@@ -46,81 +46,81 @@ function App() {
         <Route path="/" element={<Main />} />
         <Route path="Main" element={<Main />} />
         {/* User */}
-        <Route path="/user" element={<ULogin />} />
-        <Route path="/user-login" element={<ULogin />} />
-        <Route path="/user-register" element={<Register />} />
-        <Route path="/user-forget-password" element={<ForgetPassword />} />
-        <Route path="/user-menu" element={<UMenu />} />
-        <Route path="/user-profile" element={<Profile />} />
-        <Route path="/user-setting" element={<Setting />} />          
-        <Route path="/user-change-password" element={<ChangePassword />} />
-        <Route path="/user-reser-table" element={<ReserTable />} />
-        <Route path="/user-reservation" element={<Reservation />} />
-        <Route path="/user-reser-food" element={<ReserFood />} />
-        <Route path="/user-reser-detail" element={<ReserDetail />} />
-        <Route path="/user-reser-edit" element={<ReserEdit />} />
-        <Route path="/user-detail" element={<Detail />} />
-        <Route path="/user-history" element={<UHistory />} />
+        <Route path="/User" element={<ULogin />} />
+        <Route path="/User/Login" element={<ULogin />} />
+        <Route path="/User/Register" element={<Register />} />
+        <Route path="/User/ForgetPassword" element={<ForgetPassword />} />
+        <Route path="/User/Menu" element={<UMenu />} />
+        <Route path="/User/Menu/Profile" element={<Profile />} />
+        <Route path="/User/Menu/Setting" element={<Setting />} />          
+        <Route path="/User/Menu/ChangePassword" element={<ChangePassword />} />
+        <Route path="/User/Menu/ReserTable" element={<ReserTable />} />
+        <Route path="/User/Menu/Reservation" element={<Reservation />} />
+        <Route path="/User/Menu/ReserFood" element={<ReserFood />} />
+        <Route path="/User/Menu/ReserDetail" element={<ReserDetail />} />
+        <Route path="/User/Menu/ReserEdit" element={<ReserEdit />} />
+        <Route path="/User/Menu/Detail" element={<Detail />} />
+        <Route path="/User/Menu/History" element={<UHistory />} />
         {/* Restaurant */}
-        <Route path="/restaurant" element={<RLogin />} />
-        <Route path="/restaurant-login" element={<RLogin />} />
-        <Route path="/restaurant-menu" element={
+        <Route path="/Restaurant/" element={<RLogin />} />
+        <Route path="/Restaurant/Login" element={<RLogin />} />
+        <Route path="/Restaurant/Menu" element={
           <ProtectedRoute>
             <RMenu />
           </ProtectedRoute>
         } />
-        <Route path="/listfood" element={
+        <Route path="/Restaurant/Menu/Listfood" element={
           <ProtectedRoute>
             <Listfood />
           </ProtectedRoute>
         } />
-        <Route path="/listfood-add" element={
+        <Route path="/Restaurant/Menu/Listfoodadd" element={
           <ProtectedRoute>
             <Listfoodadd />
           </ProtectedRoute>
         } />
-        <Route path="/listfood-edit/:id" element={
+        <Route path="/Restaurant/Menu/Listfoodedit/:id" element={
           <ProtectedRoute>
             <Listfoodedit />
           </ProtectedRoute>
         } />
-        <Route path="/table-layouts" element={
+        <Route path="/Restaurant/Menu/TableLayouts" element={
           <ProtectedRoute>
             <TableLayouts />
           </ProtectedRoute>
         } />
-        <Route path="/table-edit-layouts" element={
+        <Route path="/Restaurant/Menu/TableEditlayouts" element={
           <ProtectedRoute>
             <TableEditlayouts />
           </ProtectedRoute>
         } />
-        <Route path="/table-map" element={
+        <Route path="/Restaurant/Menu/TableMap" element={
           <ProtectedRoute>
             <TableMap />
           </ProtectedRoute>
         } />
-        <Route path="/table-reservation" element={
+        <Route path="/Restaurant/Menu/TableReservation" element={
           <ProtectedRoute>
             <TableReservation />
           </ProtectedRoute>
         } />
-        <Route path="/table-status" element={
+        <Route path="/Restaurant/Menu/TableStatus" element={
           <ProtectedRoute>
             <TableStatus />
           </ProtectedRoute>
         } />
-        <Route path="/restaurant-history" element={
+        <Route path="/Restaurant/Menu/History" element={
           <ProtectedRoute>
             <RHistory />
           </ProtectedRoute>
         } />
-        <Route path="/payment-slip-management" element={
+        <Route path="/Restaurant/Menu/PaymentSlipManagement" element={
           <ProtectedRoute>
             <PaymentSlipManagement />
           </ProtectedRoute>
         } />
         {/* repassword ส่งลิ่ง */}
-        <Route path="/user-request-reset" element={<RequestReset />} />
+        <Route path="/User/RequestReset" element={<RequestReset />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
 
         <Route path="/payment" element={<PaymentQR />} />

@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import { FiHome, FiUser, FiMail, FiPhone, FiEdit2, FiSave } from "react-icons/fi";
+import { FiHome, FiUser } from "react-icons/fi"; // ไอคอนแบบเดียวกับในภาพ figma
 import Swal from 'sweetalert2';
 import { fetchWithAuth } from './fetchWithAuth';
-import { buildUrl } from '../../utils/api';
 
 function Profile() {
   const navigate = useNavigate();
@@ -23,7 +22,7 @@ function Profile() {
   useEffect(() => {
     // เรียก API ดึง Token
     const checkToken = async () => {
-      const response = await fetchWithAuth('/api/checkToken', {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
+      const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
       if (!response) {
         // fetchWithAuth จะ redirect ไป /User ให้อยู่แล้วถ้า token หมดอายุ
         return;
@@ -36,7 +35,7 @@ function Profile() {
     // เรียก API ดึงข้อมูลผู้ใช้
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch(buildUrl('/api/profile'), {
+        const response = await fetch("http://localhost:5000/api/profile", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`, // ส่ง token ไปใน header
@@ -93,7 +92,7 @@ function Profile() {
     setError("");
   
     try {
-      const response = await fetch(buildUrl('/api/profile'), {
+      const response = await fetch("http://localhost:5000/api/profile", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -124,129 +123,94 @@ function Profile() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-yellow-50 to-white">
+    <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <div className="w-full p-4 text-white text-xl font-semibold flex justify-center items-center relative bg-gradient-to-r from-yellow-400 to-yellow-500 shadow">
+      <div className="w-full flex items-center justify-between bg-yellow-400 p-4 text-white relative">
         <FaArrowLeft
           className="text-2xl cursor-pointer absolute left-4"
-                      onClick={() => navigate("/user-setting")}
+          onClick={() => navigate("/User/Menu/Setting")}
         />
-        <span>โปรไฟล์</span>
+        <h1 className="text-xl font-bold text-center w-full">โปรไฟล์</h1>
       </div>
-
-      {/* Profile card */}
-      <div className="max-w-lg mx-auto w-full px-4 mt-6">
-        <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100">
-          <div className="flex items-center gap-4 mb-5">
-            <div className="w-16 h-16 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center">
-              <FiUser className="w-8 h-8" />
-            </div>
-            <div className="flex-1">
-              <div className="text-gray-900 text-lg font-semibold">สวัสดี, {name || "ผู้ใช้"}</div>
-              <div className="text-gray-500 text-sm">จัดการข้อมูลส่วนตัวของคุณได้ที่นี่</div>
-            </div>
-            {!editingField ? (
+      {/* Form Content (Center content) */}
+      <div className="mt-6 flex flex-col items-center justify-center px-4">
+        <div className="w-full max-w-md ">
+          {/* ชื่อ - สกุล */}
+          <div className="mb-4 pl-4">
+            <label className="block text-black font-bold">ชื่อ - สกุล :</label>
+            {editingField ? (
+              <input
+                type="text"
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                className="w-full p-2 mt-1 border rounded"
+              />
+            ) : (
+              <p className="mt-1">{name}</p>
+            )}
+          </div>
+          {/* Email */}
+          <div className="mb-4 pl-4">
+            <label className="block text-black font-bold">Email :</label>
+            {editingField ? (
+              <input
+                type="email"
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+                className="w-full p-2 mt-1 border rounded"
+              />
+            ) : (
+              <p className="mt-1">{email}</p>
+            )}
+          </div>
+          {/* เบอร์โทรศัพท์ */}
+          <div className="mb-4 pl-4">
+            <label className="block text-black font-bold">เบอร์โทรศัพท์ :</label>
+            {editingField ? (
+              <input
+                type="text"
+                inputMode="numeric"
+                value={newPhone}
+                onChange={(e) => {
+                  const input = e.target.value;
+                  if (/^\d{0,10}$/.test(input)) {
+                    setNewPhone(input);
+                  }
+                }}
+                className="w-full p-2 mt-1 border rounded"
+              />
+            ) : (
+              <p className="mt-1">{phone}</p>
+            )}
+          </div>
+          {/* ปุ่มแก้ไข/บันทึก */}
+          <div className="flex justify-center mt-6 border-t border-gray-400 pt-6">
+            {editingField ? (
               <button
-                onClick={handleEdit}
-                className="px-3 py-2 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg flex items-center gap-2"
+                className="bg-yellow-400 text-white w-80 py-3 rounded-lg text-lg"
+                onClick={handleSave}
               >
-                <FiEdit2 />
-                แก้ไข
+                บันทึก
               </button>
             ) : (
               <button
-                onClick={handleSave}
-                className="px-3 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg flex items-center gap-2"
+                className="bg-yellow-400 text-white w-80 py-3 rounded-lg text-lg"
+                onClick={handleEdit}
               >
-                <FiSave />
-                บันทึก
+                แก้ไขข้อมูล
               </button>
             )}
           </div>
-
-          <div className="space-y-4">
-            {/* Name */}
-            <div className="p-4 rounded-xl border border-gray-200 bg-gray-50">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-8 h-8 rounded-full bg-white text-yellow-600 flex items-center justify-center border border-yellow-100">
-                  <FiUser />
-                </div>
-                <div className="text-sm text-gray-500">ชื่อ - สกุล</div>
-              </div>
-              {editingField ? (
-                <input
-                  type="text"
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                />
-              ) : (
-                <div className="text-gray-800">{name || '-'}</div>
-              )}
-            </div>
-
-            {/* Email */}
-            <div className="p-4 rounded-xl border border-gray-200 bg-gray-50">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-8 h-8 rounded-full bg-white text-yellow-600 flex items-center justify-center border border-yellow-100">
-                  <FiMail />
-                </div>
-                <div className="text-sm text-gray-500">อีเมล</div>
-              </div>
-              {editingField ? (
-                <input
-                  type="email"
-                  value={newEmail}
-                  onChange={(e) => setNewEmail(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                />
-              ) : (
-                <div className="text-gray-800">{email || '-'}</div>
-              )}
-            </div>
-
-            {/* Phone */}
-            <div className="p-4 rounded-xl border border-gray-200 bg-gray-50">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-8 h-8 rounded-full bg-white text-yellow-600 flex items-center justify-center border border-yellow-100">
-                  <FiPhone />
-                </div>
-                <div className="text-sm text-gray-500">เบอร์โทรศัพท์</div>
-              </div>
-              {editingField ? (
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  value={newPhone}
-                  onChange={(e) => {
-                    const input = e.target.value;
-                    if (/^\d{0,10}$/.test(input)) {
-                      setNewPhone(input);
-                    }
-                  }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                />
-              ) : (
-                <div className="text-gray-800">{phone || '-'}</div>
-              )}
-            </div>
-
-            {/* Error */}
-            {error && (
-              <div className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3 text-sm">
-                {error}
-              </div>
-            )}
-          </div>
+          {/* ข้อผิดพลาด */}
+          {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
         </div>
       </div>
-
-      {/* Bottom nav */}
+      {/* แถบนำทางด้านล่าง */}
       <div className="bg-gray-900 text-white flex justify-around items-center py-4 mt-auto">
-        <Link to="/user-menu" className="flex-1 flex justify-center items-center">
+        <Link to="/User/Menu" className="flex-1 flex justify-center items-center">
           <FiHome className="text-3xl text-gray-400 hover:text-white transition" />
         </Link>
-        <Link to="/user-setting" className="flex-1 flex justify-center items-center">
+        <Link to="/User/Menu/Setting" className="flex-1 flex justify-center items-center">
           <FiUser className="text-3xl text-gray-400 hover:text-white transition" />
         </Link>
       </div>

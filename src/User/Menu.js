@@ -12,7 +12,7 @@ function Menu() {
   // เช็ค token ถ้าไม่มี token จะเปลี่ยนเส้นทางไปหน้า /User
   useEffect(() => {
     const checkToken = async () => {
-      const response = await fetchWithAuth('/api/checkToken', {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
+      const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
       if (!response) {
         // fetchWithAuth จะ redirect ไป /User ให้อยู่แล้วถ้า token หมดอายุ
         return;
@@ -27,8 +27,8 @@ function Menu() {
   }, [navigate]);
 
   const menuItems = [
-    { id: 1, name: "จองโต๊ะ", image: tableImg, path: "/user-reser-table" },
-    { id: 2, name: "นัดหมายปัจจุบัน", image: historyImg, path: "/user-detail" },
+    { id: 1, name: "จองโต๊ะ", image: tableImg, path: "/User/Menu/ReserTable" },
+    { id: 2, name: "นัดหมายปัจจุบัน", image: historyImg, path: "/User/Menu/Detail" },
   ];
 
   // ตรวจสอบเวลาถ้าถึงตามที่กำหนดจะกดไปจองโต๊ะไม่ได้
@@ -49,7 +49,7 @@ function Menu() {
       // }
     }
   
-        navigate(item.path);
+    navigate(item.path.replace("./", "/User/")); // เปลี่ยน path สำหรับ navigate ให้เหมาะสม
   };
 
   return (
@@ -75,10 +75,10 @@ function Menu() {
       </div>
       {/* แถบนำทางด้านล่าง */}
       <div className="bg-gray-900 text-white flex justify-around items-center py-4 mt-auto">
-        <Link to="/user-menu" className="flex-1 flex justify-center items-center">
+        <Link to="/User/Menu" className="flex-1 flex justify-center items-center">
           <FiHome className="text-3xl text-gray-400 hover:text-white transition" />
         </Link>
-        <Link to="/user-setting" className="flex-1 flex justify-center items-center">
+        <Link to="/User/Menu/Setting" className="flex-1 flex justify-center items-center">
           <FiUser className="text-3xl text-gray-400 hover:text-white transition" />
         </Link>
       </div>

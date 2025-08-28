@@ -46,10 +46,7 @@ function TableEditlayouts() {
 
   const fetchReservationWindow = async () => {
     try {
-      const token = localStorage.getItem("restaurantToken");
-      const res = await fetch("http://localhost:5000/api/settings/reservation-window", {
-        headers: token ? { Authorization: `Bearer ${token}` } : {}
-      });
+      const res = await fetch("http://localhost:5000/api/settings/reservation-window");
       const data = await res.json();
       if (data.success) {
         setOpenTime(data.openTime || "");
@@ -62,10 +59,9 @@ function TableEditlayouts() {
 
   const saveReservationWindow = async () => {
     try {
-      const token = localStorage.getItem("restaurantToken");
       const res = await fetch("http://localhost:5000/api/settings/reservation-window", {
         method: "PUT",
-        headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           enabled: true,
           openTime,
@@ -75,7 +71,7 @@ function TableEditlayouts() {
       const data = await res.json();
       if (data.success) {
         alert("บันทึกเวลาเปิด/ปิดการจองสำเร็จ");
-        navigate("/table-map");
+        navigate("/Restaurant/Menu/TableMap");
       } else {
         alert(data.message || "บันทึกเวลาไม่สำเร็จ");
       }
@@ -141,7 +137,7 @@ function TableEditlayouts() {
         // ส่งข้อมูลไปยัง server.js ให้จัดการลบเอง
         fetch("http://localhost:5000/api/delete_table_data", {
           method: "POST",
-          headers: { "Content-Type": "application/json", ...(localStorage.getItem("restaurantToken") ? { Authorization: `Bearer ${localStorage.getItem("restaurantToken")}` } : {}) },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             imageChanged,
             tnameChanged,
@@ -158,7 +154,6 @@ function TableEditlayouts() {
               uploadPromises.push(
                 fetch("http://localhost:5000/api/table_map", {
                   method: "POST",
-                  headers: (localStorage.getItem("restaurantToken") ? { Authorization: `Bearer ${localStorage.getItem("restaurantToken")}` } : {}),
                   body: imageFormData,
                 })
               );
@@ -173,7 +168,6 @@ function TableEditlayouts() {
               uploadPromises.push(
                 fetch("http://localhost:5000/api/table_layout", {
                   method: "POST",
-                  headers: (localStorage.getItem("restaurantToken") ? { Authorization: `Bearer ${localStorage.getItem("restaurantToken")}` } : {}),
                   body: layoutFormData,
                 })
               );
@@ -181,7 +175,7 @@ function TableEditlayouts() {
               uploadPromises.push(
                 fetch("http://localhost:5000/api/table_layout/time-required", {
                   method: "PUT",
-                  headers: { "Content-Type": "application/json", ...(localStorage.getItem("restaurantToken") ? { Authorization: `Bearer ${localStorage.getItem("restaurantToken")}` } : {}) },
+                  headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ time_required: timeRequired })
                 })
               );
@@ -193,7 +187,7 @@ function TableEditlayouts() {
             // บันทึกเวลาเปิด/ปิดการจอง (สำหรับผู้ใช้) ก่อน navigate
             const res = await fetch("http://localhost:5000/api/settings/reservation-window", {
               method: "PUT",
-              headers: { "Content-Type": "application/json", ...(localStorage.getItem("restaurantToken") ? { Authorization: `Bearer ${localStorage.getItem("restaurantToken")}` } : {}) },
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ enabled: true, openTime, closeTime })
             });
             const ok = await res.json();
@@ -201,7 +195,7 @@ function TableEditlayouts() {
               alert("บันทึกเวลาเปิด/ปิดการจองไม่สำเร็จ");
             }
             alert("บันทึกข้อมูลสำเร็จ!");
-            navigate("/table-map");
+            navigate("/Restaurant/Menu/TableMap");
           })
           .catch((error) => {
             console.error("Error:", error);
@@ -220,7 +214,7 @@ function TableEditlayouts() {
       <div className="w-full flex items-center justify-between bg-yellow-400 p-4 text-white">
         <FaArrowLeft
           className="text-2xl cursor-pointer ml-4"
-          onClick={() => navigate("/table-map")}
+          onClick={() => navigate("/Restaurant/Menu/TableMap")}
         />
         <h1 className="flex-grow text-3xl font-bold text-center p-2">จัดการแผนผังโต๊ะ</h1>
       </div>
@@ -285,7 +279,7 @@ function TableEditlayouts() {
           value={tname}
           onChange={(e) => setTname(e.target.value)}
         ></textarea>
-        <label className="block font-bold text-red-600 mt-1 text-right">* กรอกชื่อโต๊ะคั่นด้วย , เช่น T01,T02 *</label>
+        <label className="block font-bold text-red-600 mt-4 text-right">* กรอกชื่อโต๊ะคั่นด้วย , เช่น T01,T02 *</label>
 
         <div className="mt-4 w-full">
         <label className="block font-bold text-black mb-1">🕒 เวลาที่ต้องมารับโต๊ะ</label>

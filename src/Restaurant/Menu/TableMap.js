@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { buildUrl } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 
@@ -20,14 +19,14 @@ export default function Table_map() {
   const fetchTableData = async () => {
     try {
       // ดึงข้อมูลรูปแผนผังโต๊ะ
-      const mapResponse = await fetch(buildUrl("/api/table_map"));
+      const mapResponse = await fetch("http://localhost:5000/api/table_map");
       const mapResult = await mapResponse.json();
       if (mapResult.success && mapResult.table_maps.length > 0) {
-        setImageUrl(buildUrl(mapResult.table_maps[0].image_path));
+        setImageUrl(`http://localhost:5000${mapResult.table_maps[0].image_path}`);
       }
 
       // ดึงข้อมูลโต๊ะจาก table_layout
-      const tableResponse = await fetch(buildUrl("/api/table_layout"));
+      const tableResponse = await fetch("http://localhost:5000/api/table_layout");
       const tableResult = await tableResponse.json();
       if (tableResult.success) {
         setTables(tableResult.tables); // ✅ เก็บทั้ง object
@@ -42,7 +41,7 @@ export default function Table_map() {
 
   const fetchReservationWindow = async () => {
     try {
-      const res = await fetch(buildUrl("/api/settings/reservation-window"));
+      const res = await fetch("http://localhost:5000/api/settings/reservation-window");
       const data = await res.json();
       if (data.success) {
         setOpenTime(data.openTime || "");
@@ -62,86 +61,43 @@ export default function Table_map() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-yellow-50 to-white">
+    <div className="w-full h-screen bg-white flex flex-col items-center">
       {/* Header */}
-      <div className="w-full p-4 text-white text-xl font-semibold flex justify-center items-center relative bg-gradient-to-r from-yellow-400 to-yellow-500 shadow">
-        <FaArrowLeft
-          className="text-2xl cursor-pointer absolute left-4"
-                      onClick={() => navigate("/restaurant-menu")}
-        />
-        <span>แผนผังโต๊ะ</span>
+      <div className="w-full flex items-center justify-between bg-yellow-400 p-4 text-white">
+        <FaArrowLeft className="text-2xl cursor-pointer ml-4" onClick={() => navigate("/Restaurant/Menu")} />
+        <h1 className="flex-grow text-3xl font-bold text-center p-2">แผนผังโต๊ะ</h1>
       </div>
 
-      <div className="w-full max-w-4xl mx-auto px-4 py-5 grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {/* Card: Table map image */}
-        <div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
-          <div className="p-4 border-b">
-            <h2 className="text-lg font-semibold text-gray-800">รูปแผนผังโต๊ะ</h2>
+      {/* แสดงรูปแผนผังโต๊ะ */}
+      <div className="p-4 w-full max-w-md">
+        <h2 className="text-lg font-bold text-black">รูปแผนผังโต๊ะ</h2>
+        {imageUrl && (
+          <div className="mt-4 flex justify-center items-center">
+            <img src={imageUrl} alt="Table Map" className="w-200 h-200 object-cover rounded" />
           </div>
-          <div className="p-4">
-            {imageUrl ? (
-              <div className="relative rounded-xl overflow-hidden border border-gray-200">
-                <img src={imageUrl} alt="Table Map" className="w-full h-full object-cover" />
-              </div>
-            ) : (
-              <div className="h-64 rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-400">
-                ไม่มีรูปแผนผังโต๊ะ
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Card: Details */}
-        <div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
-          <div className="p-4 border-b">
-            <h2 className="text-lg font-semibold text-gray-800">รายละเอียด</h2>
-          </div>
-          <div className="p-4 space-y-4">
-            {/* Time chips */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-4 rounded-xl border border-gray-200 bg-gray-50">
-                <div className="text-sm text-gray-500 mb-1">เวลาเปิดจองโต๊ะ</div>
-                <div className="text-gray-900 font-semibold">{openTime || "--:--"}</div>
-              </div>
-              <div className="p-4 rounded-xl border border-gray-200 bg-gray-50">
-                <div className="text-sm text-gray-500 mb-1">เวลาปิดจองโต๊ะ</div>
-                <div className="text-gray-900 font-semibold">{closeTime || "--:--"}</div>
-              </div>
-              <div className="p-4 rounded-xl border border-gray-200 bg-gray-50 col-span-2">
-                <div className="text-sm text-gray-500 mb-1">เวลาที่ต้องมารับโต๊ะ</div>
-                <div className="text-gray-900 font-semibold">{timeRequired || "-"}</div>
-              </div>
-            </div>
-
-            {/* Tables chips */}
-            <div>
-              <div className="text-sm text-gray-500 mb-2">โต๊ะทั้งหมด</div>
-              {tables && tables.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
-                  {sortTableNames(tables.map(t => t.tname || t.tnumber)).map((name, idx) => (
-                    <span key={idx} className="px-3 py-1 rounded-full text-sm bg-yellow-100 text-yellow-800 border border-yellow-200">
-                      {name}
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-gray-400">ไม่มีข้อมูลโต๊ะ</div>
-              )}
-            </div>
-          </div>
-        </div>
+        )}
       </div>
 
-      {/* Actions */}
-      <div className="px-4 pb-6">
-        <div className="max-w-4xl mx-auto flex justify-center">
-          <button
-            className="w-full lg:w-auto px-10 py-4 bg-yellow-400 hover:bg-yellow-500 text-white font-semibold rounded-xl shadow transition-colors"
-            onClick={() => navigate("/table-edit-layouts")}
-          >
-            แก้ไขแผนผัง
-          </button>
-        </div>
+      {/* แสดงรายการโต๊ะ */}
+      <div className="pl-4 w-full max-w-md text-black">
+        <h2 className="text-xl font-bold">โต๊ะทั้งหมด :</h2>
+        <p>{tables.map(t => t.tname || t.tnumber).join(", ")}</p>
+
+        {timeRequired && (
+          <p className="mt-2">เวลาที่ต้องมารับโต๊ะ : {timeRequired}</p>
+        )}
+
+        {(openTime || closeTime) && (
+          <p className="mt-2">เวลาเปิด/ปิดการจอง (สำหรับผู้ใช้) : {openTime || "--:--"} - {closeTime || "--:--"}</p>
+        )}
+      </div>
+
+      {/* ปุ่ม */}
+      <div className="pt-2 w-full flex justify-center mt-6">
+        <button className="w-3/4 max-w-xs p-3 bg-yellow-400 text-white font-bold rounded-xl"
+          onClick={() => navigate("/Restaurant/Menu/TableEditlayouts")}>
+          แก้ไข
+        </button>
       </div>
     </div>
   );

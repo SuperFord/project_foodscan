@@ -56,7 +56,7 @@ function ReserEdit() {
       fetchUserData();
     } else {
       // ถ้าไม่มี token ให้เปลี่ยนเส้นทางไปหน้า login
-              navigate("/user");
+      navigate("/User");
     }
   }, [token, navigate]);
 
@@ -95,7 +95,7 @@ function ReserEdit() {
       const result = await response.json();
       if (result.success) {
         alert("เเก้ไขข้อมูลจองโต๊ะสำเร็จ");
-        navigate("/user-detail", {
+        navigate("/User/Menu/Detail", {
           state: {
             reservation: reservationData
           }
@@ -110,9 +110,9 @@ function ReserEdit() {
 
   // การส่ง cart กลับไปที่ ReserFood
   const handleEditMenu = () => {
-    navigate("/user-reser-food", {
+    navigate("/User/Menu/ReserFood", {
       state: {
-        fromPage: "/user-reser-edit",
+        fromPage: "/User/Menu/ReserEdit",
         userId: userId,
         selectedTables: selectedTables,
         fullName: fullName,
@@ -148,7 +148,7 @@ function ReserEdit() {
     <div className="w-full h-screen bg-white flex flex-col items-center font-sans">
       {/* Header */}
       <div className="w-full flex items-center justify-between p-4 text-black">
-                    <FaArrowLeft className="text-2xl cursor-pointer ml-2" onClick={() => navigate("/user-detail")} />
+        <FaArrowLeft className="text-2xl cursor-pointer ml-2" onClick={() => navigate("/User/Menu/Detail")} />
         <div className="flex-grow text-3xl font-bold text-center p-2">
           เเก้ไขข้อมูลการจองโต๊ะ
           <div className="w-5/6 h-0.5 bg-slate-200 mx-auto mt-1"></div>

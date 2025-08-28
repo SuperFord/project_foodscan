@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { buildUrl } from "../../utils/api";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaUpload } from "react-icons/fa";
 
@@ -39,14 +38,6 @@ export default function ListFoodAdd() {
       return;
     }
 
-    // ดึง token จาก localStorage
-    const token = localStorage.getItem('restaurantToken');
-    if (!token) {
-      alert('กรุณาเข้าสู่ระบบใหม่');
-      navigate('/restaurant-login');
-      return;
-    }
-
     const formData = new FormData();
     formData.append("category", category); // เพิ่มหมวดหมู่ใน formData
     formData.append("name", menuName);
@@ -57,29 +48,20 @@ export default function ListFoodAdd() {
     }
 
     try {
-      const response = await fetch(buildUrl("/api/menus"), {
+      const response = await fetch("http://localhost:5000/api/menus", {
         method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`
-        },
         body: formData,
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        if (result.success) {
-          alert("บันทึกข้อมูลสำเร็จ!");
-          navigate("/listfood");
-        } else {
-          alert("เกิดข้อผิดพลาด!");
-        }
-      } else if (response.status === 401) {
-        alert('เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-        navigate('/restaurant-login');
+      const result = await response.json();
+      if (result.success) {
+        alert("บันทึกข้อมูลสำเร็จ!");
+        navigate("/Restaurant/Menu/Listfood");
       } else {
         alert("เกิดข้อผิดพลาด!");
       }
     } catch (error) {
+      console.error("Error:", error);
       alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์!");
     }
   };
@@ -92,62 +74,42 @@ export default function ListFoodAdd() {
   const handleAddCategory = async () => {
     if (!newCategory.trim()) return;
   
-    // ดึง token จาก localStorage
-    const token = localStorage.getItem('restaurantToken');
-    if (!token) {
-      alert('กรุณาเข้าสู่ระบบใหม่');
-      navigate('/restaurant-login');
-      return;
-    }
-
     try {
-      const response = await fetch(buildUrl("/api/category"), {
+      const response = await fetch("http://localhost:5000/api/category", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ name: newCategory.trim() }),
       });
   
-      if (response.ok) {
-        const result = await response.json();
-        if (result.success) {
-          // เพิ่มหมวดหมู่ใหม่ในรูปแบบ object ที่มี id และ name
-          const newCategoryObj = { id: Date.now(), name: newCategory.trim() };
-          setCategoryOptions(prev => [...prev, newCategoryObj]);
-          setCategory(newCategory.trim()); // ตั้งค่าหมวดหมู่ที่เลือกให้เป็นอันใหม่
-          setNewCategory("");
-          setShowAddCategory(false);
-        } else {
-          alert("ไม่สามารถเพิ่มหมวดหมู่ได้");
-        }
-      } else if (response.status === 401) {
-        alert('เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-        navigate('/restaurant-login');
-      } else {
-        alert("ไม่สามารถเพิ่มหมวดหมู่ได้");
-      }
+      const result = await response.json();
+      if (result.success) {
+        setCategoryOptions(prev => [...prev, newCategory]); // เพิ่มใน dropdown
+        setCategory(newCategory); // ตั้งค่าหมวดหมู่ที่เลือกให้เป็นอันใหม่
+        setNewCategory("");
+        setShowAddCategory(false);
+    } else {
+      alert("ไม่สามารถเพิ่มหมวดหมู่ได้");
+    }
     } catch (error) {
-      alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์!");
+      console.error('เกิดข้อผิดพลาด:', error);
     }
   };
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(buildUrl("/api/categories"));
-      const result = await response.json();
-      if (result.success) {
-        setCategoryOptions(result.categories);
+      const response = await fetch("http://localhost:5000/api/categories");
+      const data = await response.json();
+      if (data.success) {
+        const names = data.categories.map(cat => cat.name);
+        setCategoryOptions(names);
       }
     } catch (error) {
-      // Error handling without console.log
+      console.error("โหลดหมวดหมู่ล้มเหลว:", error);
     }
   };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  fetchCategories();
 
   return (
     <div className="w-full h-screen bg-white flex flex-col items-center">
@@ -155,7 +117,7 @@ export default function ListFoodAdd() {
       <div className="w-full flex items-center justify-between bg-yellow-400 p-4 text-white">
         <FaArrowLeft
           className="text-2xl cursor-pointer ml-4"
-                      onClick={() => navigate("/listfood")}
+          onClick={() => navigate("/Restaurant/Menu/Listfood")}
         />
         <h1 className="flex-grow text-3xl font-bold text-center p-2">เพิ่มรายการอาหาร</h1>
       </div>
@@ -232,13 +194,13 @@ export default function ListFoodAdd() {
                 }
               }}
             >
-              <option key="default" value="">-- เลือกหมวดหมู่ --</option>
-              {categoryOptions.map((cat, index) => (
-                <option key={cat.id || `cat-${index}`} value={cat.name}>
-                  {cat.name}
+              <option value="">-- เลือกหมวดหมู่ --</option>
+              {categoryOptions.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
                 </option>
               ))}
-              <option key="add_new" value="add_new">+ เพิ่มหมวดหมู่ใหม่</option>
+              <option value="add_new">+ เพิ่มหมวดหมู่ใหม่</option>
             </select>
           </div>
         </div>

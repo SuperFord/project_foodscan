@@ -11,7 +11,7 @@ const ProtectedRoute = ({ children }) => {
       const token = localStorage.getItem('restaurantToken');
       
       if (!token) {
-        navigate('/restaurant-login');
+        navigate('/Restaurant/Login');
         return;
       }
 
@@ -28,13 +28,13 @@ const ProtectedRoute = ({ children }) => {
           // Token ไม่ถูกต้องหรือหมดอายุ
           localStorage.removeItem('restaurantToken');
           localStorage.removeItem('restaurantAdmin');
-          navigate('/restaurant-login');
+          navigate('/Restaurant/Login');
         }
       } catch (error) {
         console.error('Auth verification error:', error);
         localStorage.removeItem('restaurantToken');
         localStorage.removeItem('restaurantAdmin');
-        navigate('/restaurant-login');
+        navigate('/Restaurant/Login');
       } finally {
         setIsLoading(false);
       }

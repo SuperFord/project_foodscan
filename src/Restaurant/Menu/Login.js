@@ -40,7 +40,7 @@ function Login() {
         localStorage.setItem('restaurantAdmin', JSON.stringify(data.admin));
         
         // นำทางไปยังหน้า Menu
-        navigate("/restaurant-menu");
+        navigate("/Restaurant/Menu");
       } else {
         setErrorMessage(data.message || 'เกิดข้อผิดพลาดในการล็อกอิน');
       }

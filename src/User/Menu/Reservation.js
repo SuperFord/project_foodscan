@@ -5,7 +5,6 @@ import TimePicker from 'react-time-picker';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
 import { fetchWithAuth } from './fetchWithAuth';
-import { buildUrl } from '../../utils/api';
 import Swal from 'sweetalert2';
 
 function Reservation() {
@@ -32,14 +31,14 @@ function Reservation() {
   // ดึงข้อมูลชื่อ-สกุลจากฐานข้อมูลโดยใช้ token
   useEffect(() => {
     const checkAuthAndData = async () => {
-      const response = await fetchWithAuth('/api/checkToken', {}, navigate);  
+      const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);  
       if (!response || !response.ok) {
         // ถ้า token ไม่ valid จะถูก redirect แล้ว ไม่ต้องทำต่อ
         return;
       }
   
       // ✅ token valid แล้ว ค่อย fetch user data
-      const userRes = await fetchWithAuth('/api/user');
+      const userRes = await fetchWithAuth("http://localhost:5000/api/user");
       if (userRes) {
         const data = await userRes.json();
         if (data.success) {
@@ -63,7 +62,7 @@ function Reservation() {
           timer: 2000,
           timerProgressBar: true,
         }).then(() => {
-          navigate("/user-reser-table");
+          navigate("/User/Menu/ReserTable");
         });
       }
     };
@@ -74,7 +73,7 @@ function Reservation() {
   useEffect(() => {
   const fetchTimeRequired = async () => {
     try {
-      const res = await fetch(buildUrl('/api/table_layout'));
+      const res = await fetch("http://localhost:5000/api/table_layout");
       const data = await res.json();
 
       if (data.success) {
@@ -124,7 +123,7 @@ function Reservation() {
     };
 
     try {
-      const response = await fetch(buildUrl('/api/reservation'), {
+      const response = await fetch("http://localhost:5000/api/reservation", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -137,7 +136,7 @@ function Reservation() {
       const result = await response.json();
       if (result.success) {
         alert("จองโต๊ะสำเร็จ");
-        navigate("/user-reser-detail", {
+        navigate("/User/Menu/ReserDetail", {
           state: {
             reservation: reservationData
           }
@@ -152,9 +151,9 @@ function Reservation() {
 
   // การส่ง cart กลับไปที่ ReserFood
   const handleEditMenu = () => {
-    navigate("/user-reser-food", {
+    navigate("/User/Menu/ReserFood", {
       state: {
-        fromPage: "/user-reservation",
+        fromPage: "/User/Menu/Reservation",
         selectedTables: selectedTables,
         fullName: fullName,
         email: email,
@@ -187,7 +186,7 @@ function Reservation() {
     <div className="w-full h-screen bg-white flex flex-col items-center font-sans">
       {/* Header */}
       <div className="w-full flex items-center justify-between p-4 text-black">
-                    <FaArrowLeft className="text-2xl cursor-pointer ml-2" onClick={() => navigate("/user-reser-table")} />
+        <FaArrowLeft className="text-2xl cursor-pointer ml-2" onClick={() => navigate("/User/Menu/ReserTable")} />
         <div className="flex-grow text-3xl font-bold text-center p-2">
           จองโต๊ะ
           <div className="w-5/6 h-0.5 bg-slate-200 mx-auto mt-1"></div>

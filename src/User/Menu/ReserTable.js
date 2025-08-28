@@ -4,7 +4,6 @@ import { FaArrowLeft } from "react-icons/fa";
 import Select from "react-select";
 import Swal from 'sweetalert2';
 import { fetchWithAuth } from './fetchWithAuth';
-import { buildUrl } from '../../utils/api';
 
 export default function ReserTable() {
   const navigate = useNavigate();
@@ -21,12 +20,12 @@ export default function ReserTable() {
 
   const fetchTableData = useCallback(async () => {
     try {
-      const mapResponse = await fetch(buildUrl('/api/table_map'));
+      const mapResponse = await fetch("http://localhost:5000/api/table_map");
       const mapResult = await mapResponse.json();
       if (mapResult.success && mapResult.table_maps.length > 0) {
-        setImageUrl(buildUrl(mapResult.table_maps[0].image_path));
+        setImageUrl(`http://localhost:5000${mapResult.table_maps[0].image_path}`);
       }
-      const tableResponse = await fetch(buildUrl('/api/Rtable_layout'));
+      const tableResponse = await fetch("http://localhost:5000/api/Rtable_layout");
       const tableResult = await tableResponse.json();
       if (tableResult.success && Array.isArray(tableResult.tables)) {
         // console.log("Table Result: ", tableResult.tables);
@@ -47,40 +46,13 @@ export default function ReserTable() {
 
   const fetchReservationWindow = async () => {
     try {
-      const res = await fetch(buildUrl('/api/settings/reservation-window'));
+      const res = await fetch("http://localhost:5000/api/settings/reservation-window");
       const data = await res.json();
       if (data.success) {
         setReservationEnabled(Boolean(data.enabled));
         setOpenTime(data.openTime || "");
         setCloseTime(data.closeTime || "");
         computeClosedNow(Boolean(data.enabled), data.openTime, data.closeTime);
-
-        // ถ้าอยู่นอกเวลา ให้แจ้งเตือนและเด้งกลับหน้าเมนู
-        const nowClosed = (() => {
-          if (!Boolean(data.enabled) || !data.openTime || !data.closeTime) return true;
-          const now = new Date();
-          const [oh, om] = String(data.openTime).split(":").map(Number);
-          const [ch, cm] = String(data.closeTime).split(":").map(Number);
-          const open = new Date(now);
-          open.setHours(oh, om, 0, 0);
-          const close = new Date(now);
-          close.setHours(ch, cm, 0, 0);
-          if (close <= open) {
-            return !(now >= open || now < close);
-          }
-          return !(now >= open && now < close);
-        })();
-
-        if (nowClosed) {
-          Swal.fire({
-            icon: 'warning',
-            title: 'อยู่นอกเวลาการจอง',
-            text: 'กรุณากลับมาใหม่ในช่วงเวลาที่เปิดให้จอง',
-            confirmButtonText: 'ตกลง',
-            timer: 2500,
-            timerProgressBar: true,
-          }).then(() => navigate('/user-menu'));
-        }
       }
     } catch (err) {
       console.error("Error fetching reservation window:", err);
@@ -124,7 +96,7 @@ export default function ReserTable() {
   
     //เช็ค token ว่ามีการ login มายัง
     const checkToken = async () => {
-      const response = await fetchWithAuth('/api/checkToken', {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
+      const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
         if (!response) {
           // fetchWithAuth จะ redirect ไป /User ให้อยู่แล้วถ้า token หมดอายุ
           return;
@@ -137,7 +109,7 @@ export default function ReserTable() {
 
     const checkExistingReservation = async () => {
       try {
-        const res = await fetch(buildUrl('/api/reservation/today'), {
+        const res = await fetch("http://localhost:5000/api/reservation/today", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -148,7 +120,7 @@ export default function ReserTable() {
 
         if (data.length > 0) {
           // ถ้ามีการจองวันนี้อยู่แล้วให้เปลี่ยนเส้นทาง
-          navigate("/user-detail");
+          navigate("/User/Menu/Detail");
         }
         
         // 🕒 เช็คเวลาเกิน 19:30
@@ -191,7 +163,7 @@ export default function ReserTable() {
       return;
     }
   
-    navigate("/user-reservation", {
+    navigate("/User/Menu/Reservation", {
       state: {
         selectedTables: selectedTables,
         joinTables: joinTables
@@ -203,7 +175,7 @@ export default function ReserTable() {
     <div className="w-full h-screen bg-white flex flex-col items-center">
       {/* Header */}
       <div className="w-full flex items-center justify-between p-4 text-black">
-                    <FaArrowLeft className="text-2xl cursor-pointer ml-2" onClick={() => navigate("/user-menu")} />
+        <FaArrowLeft className="text-2xl cursor-pointer ml-2" onClick={() => navigate("/User/Menu")} />
         <div className="flex-grow text-3xl font-bold text-center p-2">จองโต๊ะ</div>
       </div>
 

@@ -4,7 +4,6 @@ import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
 import Swal from 'sweetalert2'; // นำเข้า sweetalert2
 import { FiHome, FiUser } from "react-icons/fi"; // ไอคอนแบบเดียวกับในภาพ figma
 import { fetchWithAuth } from './fetchWithAuth';
-import { buildUrl } from '../../utils/api';
 
 
 function ChangePassword() {
@@ -20,7 +19,7 @@ function ChangePassword() {
     useEffect(() => {
       // เรียก API ดึง Token
       const checkToken = async () => {
-        const response = await fetchWithAuth('/api/checkToken', {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
+        const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
         if (!response) {
           // fetchWithAuth จะ redirect ไป /User ให้อยู่แล้วถ้า token หมดอายุ
           return;
@@ -72,7 +71,7 @@ function ChangePassword() {
       setPasswordMismatch(false); // รีเซ็ตเมื่อรหัสผ่านตรงกัน
     
       try {
-        const response = await fetch(buildUrl('/api/changepassword'), {
+        const response = await fetch("http://localhost:5000/api/changepassword", {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -93,7 +92,7 @@ function ChangePassword() {
             timer: 1000, // รอ 1 วินาที แล้วไปหน้า Setting อัตโนมัติ
             timerProgressBar: true,
           }).then(() => {
-            navigate('/user-setting'); // ไปยังหน้า setting หลังจากแจ้งเตือนสำเร็จ
+            navigate('/User/Menu/Setting'); // ไปยังหน้า setting หลังจากแจ้งเตือนสำเร็จ
           });
         } else {
           // แสดงข้อความเมื่อเกิดข้อผิดพลาด
@@ -119,7 +118,7 @@ function ChangePassword() {
         <div className="w-full flex items-center justify-between bg-yellow-400 p-4 text-white relative">
           <FaArrowLeft
             className="text-2xl cursor-pointer"
-            onClick={() => navigate("/user-setting")}
+            onClick={() => navigate("/User/Menu/Setting")}
           />
           <h1 className="text-xl font-bold text-center flex-grow">รหัสผ่านเเละความปลอดภัย</h1>
         </div>
@@ -191,10 +190,10 @@ function ChangePassword() {
         </div>
         {/* แถบนำทางด้านล่าง */}
         <div className="bg-gray-900 text-white flex justify-around items-center py-4 mt-auto">
-          <Link to="/user-menu" className="flex-1 flex justify-center items-center">
+          <Link to="/User/Menu" className="flex-1 flex justify-center items-center">
             <FiHome className="text-3xl text-gray-400 hover:text-white transition" />
           </Link>
-          <Link to="/user-setting" className="flex-1 flex justify-center items-center">
+          <Link to="/User/Menu/Setting" className="flex-1 flex justify-center items-center">
             <FiUser className="text-3xl text-gray-400 hover:text-white transition" />
           </Link>
         </div>

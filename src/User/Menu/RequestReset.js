@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { buildUrl } from '../../utils/api';
 import { useNavigate } from 'react-router-dom';
 import { FaEnvelope } from 'react-icons/fa';
 
@@ -15,7 +14,7 @@ function RequestReset() {
     }
 
     try {
-      const res = await fetch(buildUrl('/api/request-reset-password'), {
+      const res = await fetch('http://localhost:5000/api/request-reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -63,7 +62,7 @@ function RequestReset() {
         )}
 
         <button
-                      onClick={() => navigate('/user-login')}
+          onClick={() => navigate('/User/Login')}
           className="mt-4 text-sm text-gray-500 hover:text-yellow-500 transition"
         >
           🔙 กลับไปหน้าเข้าสู่ระบบ

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { buildUrl } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaUpload } from "react-icons/fa";
 
@@ -17,32 +16,23 @@ function TableLayouts() {
   };
 
   const handleSubmit = async () => {
+    // ถ้าไม่กรอกข้อมูลใดเลยจะแจ้งเตือน
     if (!tnumber && !tname) {
       alert("กรุณากรอกข้อมูล");
       return;
     }
 
-    // ดึง token จาก localStorage
-    const token = localStorage.getItem('restaurantToken');
-    if (!token) {
-      alert('กรุณาเข้าสู่ระบบใหม่');
-      navigate('/restaurant-login');
-      return;
-    }
-
+  
     let imageURL = null;
-
-    // 1. อัปโหลดรูปภาพไปที่ table_map (ถ้ามี)
+  
+    // 1. อัปโหลดรูปภาพไปที่ table_map
     if (file) {
       const imageFormData = new FormData();
       imageFormData.append("image", file);
   
       try {
-        const imageResponse = await fetch(buildUrl("/api/table_map"), {
+        const imageResponse = await fetch("http://localhost:5000/api/table_map", {
           method: "POST",
-          headers: {
-            "Authorization": `Bearer ${token}`
-          },
           body: imageFormData,
         });
   
@@ -54,6 +44,7 @@ function TableLayouts() {
           return;
         }
       } catch (error) {
+        console.error("Error uploading image:", error);
         alert("เกิดข้อผิดพลาดในการอัพโหลดรูปภาพ!");
         return;
       }
@@ -73,11 +64,8 @@ function TableLayouts() {
         layoutFormData.append("tname", formattedTname);
       }
   
-      const layoutResponse = await fetch(buildUrl("/api/table_layout"), {
+      const layoutResponse = await fetch("http://localhost:5000/api/table_layout", {
         method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`
-        },
         body: layoutFormData,
       });
   
@@ -87,14 +75,15 @@ function TableLayouts() {
   
         // 📌 ถ้ามีรูปภาพก็ส่งไปยัง table_map
         if (imageURL) {
-          navigate("/table-map", { state: { imageURL } });
+          navigate("/Restaurant/Menu/TableMap", { state: { imageURL } });
         } else {
-          navigate("/table-map");
+          navigate("/Restaurant/Menu/TableMap");
         }
       } else {
         alert("เกิดข้อผิดพลาดในการบันทึกข้อมูลแผงผังโต๊ะ!");
       }
     } catch (error) {
+      console.error("Error:", error);
       alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์!");
     }
   };
@@ -110,7 +99,7 @@ function TableLayouts() {
       <div className="w-full flex items-center justify-between bg-yellow-400 p-4 text-white">
         <FaArrowLeft
           className="text-2xl cursor-pointer ml-4"
-                      onClick={() => navigate("/restaurant-menu")}
+          onClick={() => navigate("/Restaurant/Menu")}
         />
         <h1 className="flex-grow text-3xl font-bold text-center p-2">จัดการเเผงผังโต๊ะ</h1>
       </div>

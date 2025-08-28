@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from "react"
 import { useNavigate } from "react-router-dom"
-import { buildUrl } from "../../utils/api"
 import { FaArrowLeft, FaSave, FaInfoCircle, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa"
 
 function QRSettings() {
@@ -25,19 +24,10 @@ function QRSettings() {
 
   const fetchSettings = useCallback(async () => {
     try {
-      const token = localStorage.getItem("restaurantToken")
-      const response = await fetch(buildUrl("/api/settings/qr-payment"), {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      })
-      if (response.status === 401 || response.status === 403) {
-        setLoading(false)
-        showMessage("กรุณาเข้าสู่ระบบแอดมินก่อน", "error")
-        localStorage.removeItem("restaurantToken")
-        localStorage.removeItem("restaurantAdmin")
-        navigate("/restaurant-login")
-        return
-      }
+      const response = await fetch("http://localhost:5000/api/settings/qr-payment")
       const data = await response.json()
+
+      console.log("Fetched settings:", data) // Debug log
 
       if (data.success) {
         setIsEnabled(data.enableQR || false)
@@ -47,7 +37,9 @@ function QRSettings() {
       }
       setLoading(false)
     } catch (err) {
-      // Error handling without console.log
+      console.error("Error fetching settings:", err)
+      setLoading(false)
+      showMessage("เกิดข้อผิดพลาดในการโหลดข้อมูล", "error")
     }
   }, [showMessage])
 
@@ -79,17 +71,18 @@ function QRSettings() {
         promptpayNumber: promptpayNumber.trim(),
       }
 
-      const token = localStorage.getItem("restaurantToken")
-      const response = await fetch(buildUrl("/api/settings/qr-payment"), {
+      console.log("Sending data:", requestData) // Debug log
+
+      const response = await fetch("http://localhost:5000/api/settings/qr-payment", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify(requestData),
       })
 
       const data = await response.json()
+      console.log("Response:", data) // Debug log
 
       if (data.success) {
         showMessage("บันทึกการตั้งค่าสำเร็จ", "success")
@@ -101,7 +94,7 @@ function QRSettings() {
         showMessage(data.message || "เกิดข้อผิดพลาดในการบันทึก", "error")
       }
     } catch (err) {
-      // Error handling without console.log
+      console.error("Error updating settings:", err)
       showMessage("เกิดข้อผิดพลาดในการบันทึก", "error")
     } finally {
       setSaving(false)
@@ -142,7 +135,7 @@ function QRSettings() {
       <div className="w-full flex items-center justify-between bg-yellow-400 p-4 text-white shadow-md">
         <FaArrowLeft
           className="text-2xl cursor-pointer ml-4 hover:text-yellow-200 transition-colors"
-                      onClick={() => navigate("/restaurant-menu")}
+          onClick={() => navigate("/Restaurant/Menu")}
         />
         <h1 className="flex-grow text-3xl font-bold text-center p-2">การตั้งค่า QR พร้อมเพย์</h1>
         <div className="w-8"></div>

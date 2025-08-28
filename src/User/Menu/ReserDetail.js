@@ -28,7 +28,7 @@ function ReserDetail() {
         const data = await res.json();
         setRestaurantName(data.name); // สมมติว่า API ส่ง { name: 'ชื่อร้าน' }
       } catch (error) {
-        // console.error("Error fetching restaurant name:", error);
+        console.error("Error fetching restaurant name:", error);
       }
 
       // ✅ ตรวจสอบข้อมูลการจองหลังจาก token ผ่านแล้ว
@@ -41,7 +41,7 @@ function ReserDetail() {
           timer: 1000,
           timerProgressBar: true,
         }).then(() => {
-          navigate("/user");
+          navigate("/User/");
         });
       }
 
@@ -67,15 +67,12 @@ function ReserDetail() {
             } else if (matched.status === 'approved' || matched.status === 'used') {
               setPaymentStatusBanner({ type: 'approved', text: 'ชำระเงินได้รับการยืนยันแล้ว ระบบได้บันทึกการจองของคุณ' });
             } else if (matched.status === 'rejected') {
-              // ตรวจสอบว่ามีรายการสั่งอาหารหรือไม่ ถ้าไม่มีก็ไม่แสดงข้อความการปฏิเสธ
-              if (reservation.foodorder && reservation.foodorder.length > 0) {
-                setPaymentStatusBanner({ type: 'rejected', text: 'การชำระเงินถูกปฏิเสธ การจองถูกยกเลิก หากสงสัยโปรดติดต่อร้าน' });
-              }
+              setPaymentStatusBanner({ type: 'rejected', text: 'การชำระเงินถูกปฏิเสธ การจองถูกยกเลิก หากสงสัยโปรดติดต่อร้าน' });
             }
           }
         }
       } catch (err) {
-        // Error handling without console.log
+        console.error('Error fetching user slips:', err);
       }
     };
   
@@ -95,7 +92,7 @@ function ReserDetail() {
     <div className="min-h-screen flex flex-col justify-between">
     {/* Header */}
     <div className="w-full flex bg-yellow-400 items-center justify-between p-4 text-white">
-                  <FaArrowLeft className="text-3xl cursor-pointer ml-2" onClick={() => navigate("/user-menu")} />
+      <FaArrowLeft className="text-3xl cursor-pointer ml-2" onClick={() => navigate("/User/Menu")} />
       <div className="flex-grow text-3xl font-bold text-center p-2">รายละเอียดการจอง</div>
     </div>
       {/* Form รายละเอียดข้อมูลการจอง */}
@@ -150,17 +147,17 @@ function ReserDetail() {
               </table>
             </div>
           </div>
-                          <button onClick={() => navigate("/user-menu")} className="w-full h-14 bg-yellow-400 hover:bg-yellow-500 text-white py-2 rounded-xl font-semibold">
+          <button onClick={() => navigate("/User/Menu")} className="w-full h-14 bg-yellow-400 hover:bg-yellow-500 text-white py-2 rounded-xl font-semibold">
             กลับหน้าหลัก
           </button>
         </div>
       </div>
       {/* แถบนำทางด้านล่าง */}
       <div className="bg-gray-900 text-white flex justify-around items-center py-4 mt-auto">
-        <Link to="/user-menu" className="flex-1 flex justify-center items-center">
+        <Link to="/User/Menu" className="flex-1 flex justify-center items-center">
           <FiHome className="text-3xl text-gray-400 hover:text-white transition" />
         </Link>
-        <Link to="/user-setting" className="flex-1 flex justify-center items-center">
+        <Link to="/User/Menu/Setting" className="flex-1 flex justify-center items-center">
           <FiUser className="text-3xl text-gray-400 hover:text-white transition" />
         </Link>
       </div>

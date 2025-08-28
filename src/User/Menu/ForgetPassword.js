@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { buildUrl } from '../../utils/api';
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
 
@@ -37,7 +36,7 @@ function ForgetPassword() {
       setPasswordMismatch(false); // รีเซ็ตเมื่อรหัสผ่านตรงกัน
 
       try {
-        const response = await fetch(buildUrl('/forget-password'), {
+        const response = await fetch('http://localhost:5000/forget-password', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -65,7 +64,7 @@ function ForgetPassword() {
         <div className="w-full flex items-center justify-between bg-yellow-400 p-4 text-white">
           <FaArrowLeft
             className="text-2xl cursor-pointer"
-            onClick={() => navigate("/user")}
+            onClick={() => navigate("/User/")}
           />
           <h1 className="text-xl font-bold text-center flex-grow">รหัสผ่านเเละความปลอดภัย</h1>
         </div>

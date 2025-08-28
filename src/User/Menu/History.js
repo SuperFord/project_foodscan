@@ -5,7 +5,6 @@ import { FaArrowLeft } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { FiHome, FiUser } from "react-icons/fi";
 import { fetchWithAuth } from './fetchWithAuth';
-import { buildUrl } from '../../utils/api';
 
 function History() {
   const navigate = useNavigate();
@@ -16,7 +15,7 @@ function History() {
   useEffect(() => {
     // ตรวจสอบ Token
     const checkToken = async () => {
-      const response = await fetchWithAuth('/api/checkToken', {}, navigate);
+      const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);
       if (!response) {
         return;
       }
@@ -28,7 +27,7 @@ function History() {
     // ดึงประวัติการจองและเรียงจากใหม่ไปเก่า
     const fetchHistory = async () => {
       try {
-        const res = await fetch(buildUrl('/api/user/history'), {
+        const res = await fetch('http://localhost:5000/api/user/history', {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -62,7 +61,7 @@ function History() {
     <div className="w-full h-screen bg-white">
       {/* Header */}
       <div className="w-full flex items-center justify-between bg-yellow-400 p-4 text-white">
-                    <FaArrowLeft className="text-2xl cursor-pointer" onClick={() => navigate("/user-setting")} />
+        <FaArrowLeft className="text-2xl cursor-pointer" onClick={() => navigate("/User/Menu/Setting")} />
         <h1 className="text-2xl font-bold text-center flex-grow">ประวัติการจอง</h1>
       </div>
       {/* แสดงประวัติ */}
@@ -139,10 +138,10 @@ function History() {
       )}
       {/* แถบนำทางด้านล่าง */}
       <div className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around items-center py-4">
-        <Link to="/user-menu" className="flex-1 flex justify-center items-center">
+        <Link to="/User/Menu" className="flex-1 flex justify-center items-center">
           <FiHome className="text-3xl text-gray-400 hover:text-white transition" />
         </Link>
-        <Link to="/user-setting" className="flex-1 flex justify-center items-center">
+        <Link to="/User/Menu/Setting" className="flex-1 flex justify-center items-center">
           <FiUser className="text-3xl text-gray-400 hover:text-white transition" />
         </Link>
       </div>

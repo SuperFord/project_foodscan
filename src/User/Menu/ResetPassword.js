@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { buildUrl } from '../../utils/api';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaLock } from 'react-icons/fa';
 
@@ -35,7 +34,7 @@ function ResetPassword() {
     }
 
     try {
-      const res = await fetch(buildUrl('/api/reset-password'), {
+      const res = await fetch('http://localhost:5000/api/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, newPassword: trimmedPassword }),
@@ -44,7 +43,7 @@ function ResetPassword() {
       const data = await res.json();
       if (data.success) {
         setMessage(data.message);
-        setTimeout(() => navigate('/user-login'), 2000);
+        setTimeout(() => navigate('/User/Login'), 2000);
       } else {
         setError(data.message || 'ไม่สามารถเปลี่ยนรหัสผ่านได้');
       }
@@ -104,7 +103,7 @@ function ResetPassword() {
         {message && <p className="mt-4 text-green-600 text-sm text-center">{message}</p>}
 
         <button
-                      onClick={() => navigate('/user-login')}
+          onClick={() => navigate('/User/Login')}
           className="mt-4 text-sm text-gray-500 hover:text-yellow-500 transition"
         >
           🔙 กลับไปหน้าเข้าสู่ระบบ

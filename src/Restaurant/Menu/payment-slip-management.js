@@ -1,8 +1,6 @@
 "use client"
 
 import { useEffect, useState, useCallback } from "react"
-import { useNavigate } from "react-router-dom"
-import { buildUrl } from "../../utils/api"
 
 // CSS for animations
 const modalStyles = `
@@ -23,7 +21,6 @@ const modalStyles = `
 `
 
 function PaymentSlipManagement() {
-  const navigate = useNavigate()
   const [slips, setSlips] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -35,62 +32,6 @@ function PaymentSlipManagement() {
   const [showRejectModal, setShowRejectModal] = useState(null)
   const [rejectNote, setRejectNote] = useState("")
   const [showSuccessModal, setShowSuccessModal] = useState({ show: false, message: "", type: "" })
-
-  const formatThaiBuddhistDate = (iso) => {
-    if (!iso) return ""
-    const [year, month, day] = iso.split("-").map((v) => Number(v))
-    if (!year || !month || !day) return ""
-    const buddhistYear = year + 543
-    const dd = String(day).padStart(2, "0")
-    const mm = String(month).padStart(2, "0")
-    return `${dd}/${mm}/${buddhistYear}`
-  }
-
-  // Thai Buddhist Era date picker state
-  const today = new Date()
-  const currentBEYear = today.getFullYear() + 543
-  const [filterDay, setFilterDay] = useState("")
-  const [filterMonth, setFilterMonth] = useState("")
-  const [filterYearBE, setFilterYearBE] = useState("")
-
-  const getDaysInMonth = (month, gregorianYear) => {
-    if (!month || !gregorianYear) return 31
-    return new Date(gregorianYear, month, 0).getDate()
-  }
-
-  const months = [
-    { value: 1, label: "มกราคม" },
-    { value: 2, label: "กุมภาพันธ์" },
-    { value: 3, label: "มีนาคม" },
-    { value: 4, label: "เมษายน" },
-    { value: 5, label: "พฤษภาคม" },
-    { value: 6, label: "มิถุนายน" },
-    { value: 7, label: "กรกฎาคม" },
-    { value: 8, label: "สิงหาคม" },
-    { value: 9, label: "กันยายน" },
-    { value: 10, label: "ตุลาคม" },
-    { value: 11, label: "พฤศจิกายน" },
-    { value: 12, label: "ธันวาคม" },
-  ]
-
-  const yearsBE = (() => {
-    const range = []
-    const start = currentBEYear - 5
-    const end = currentBEYear + 5
-    for (let y = end; y >= start; y--) range.push(y)
-    return range
-  })()
-
-  const updateDateFilterFromBE = (day, month, yearBE) => {
-    if (!day || !month || !yearBE) {
-      setDateFilter("")
-      return
-    }
-    const gYear = Number(yearBE) - 543
-    const dd = String(day).padStart(2, "0")
-    const mm = String(month).padStart(2, "0")
-    setDateFilter(`${gYear}-${mm}-${dd}`)
-  }
 
   const fetchSlips = useCallback(async () => {
     try {
@@ -105,13 +46,11 @@ function PaymentSlipManagement() {
         params.append("date", dateFilter)
       }
 
-      const url = buildUrl(`/api/payment-slips?${params}`)
-      const token = localStorage.getItem("restaurantToken")
+      const url = `http://localhost:5000/api/payment-slips?${params}`
       const response = await fetch(url, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       })
 
@@ -126,7 +65,9 @@ function PaymentSlipManagement() {
         throw new Error(data.message || "ไม่สามารถโหลดข้อมูลสลิปได้")
       }
     } catch (error) {
-      // Error handling without console.log
+      console.error("Error fetching slips:", error)
+      setError(error.message)
+      setSlips([])
     } finally {
       setLoading(false)
     }
@@ -139,12 +80,10 @@ function PaymentSlipManagement() {
   const updateSlipStatus = async (slipId, status, note = "") => {
     setUpdating(slipId)
     try {
-      const token = localStorage.getItem("restaurantToken")
-      const response = await fetch(buildUrl(`/api/payment-slips/${slipId}/status`), {
+      const response = await fetch(`http://localhost:5000/api/payment-slips/${slipId}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({ status, note }),
       })
@@ -161,16 +100,12 @@ function PaymentSlipManagement() {
         const type = status === "approved" ? "success" : "error"
 
         setShowSuccessModal({ show: true, message, type })
-        
-        // ปิด modal อัตโนมัติหลังจาก 1 วินาที
-        setTimeout(() => {
-          setShowSuccessModal({ show: false, message: "", type: "" })
-        }, 1000)
       } else {
         alert(data.message || "ไม่สามารถอัปเดตสถานะได้")
       }
     } catch (error) {
-      // Error handling without console.log
+      console.error("Error updating slip status:", error)
+      alert("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้")
     } finally {
       setUpdating(null)
     }
@@ -189,6 +124,7 @@ function PaymentSlipManagement() {
       pending: { label: "รอตรวจสอบ", className: "bg-yellow-100 text-yellow-800 border-yellow-200" },
       approved: { label: "อนุมัติแล้ว", className: "bg-green-100 text-green-800 border-green-200" },
       rejected: { label: "ปฏิเสธ", className: "bg-red-100 text-red-800 border-red-200" },
+      used: { label: "ใช้งานแล้ว", className: "bg-blue-100 text-blue-800 border-blue-200" },
     }
 
     const config = statusConfig[status] || statusConfig.pending
@@ -258,14 +194,14 @@ function PaymentSlipManagement() {
             </div>
             <div className="flex items-center space-x-2">
               <button
-                onClick={() => navigate("/restaurant-menu")}
+                onClick={() => window.history.back()}
                 className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
               >
                 ย้อนกลับ
               </button>
               <button
                 onClick={fetchSlips}
-                className="px-4 py-2 bg-yellow-400 text-white rounded hover:bg-yellow-500 transition-colors flex items-center"
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors flex items-center"
               >
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -282,12 +218,12 @@ function PaymentSlipManagement() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white rounded-lg shadow p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">รอตรวจสอบ</p>
-                <p className="text-2xl font-bold text-yellow-500">{getStatusCount("pending")}</p>
+                <p className="text-2xl font-bold text-yellow-600">{getStatusCount("pending")}</p>
               </div>
               <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
                 <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -329,6 +265,25 @@ function PaymentSlipManagement() {
               </div>
             </div>
           </div>
+
+          <div className="bg-white rounded-lg shadow p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">ใช้งานแล้ว</p>
+                <p className="text-2xl font-bold text-blue-600">{getStatusCount("used")}</p>
+              </div>
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Filters */}
@@ -343,13 +298,13 @@ function PaymentSlipManagement() {
                   { key: "pending", label: "รอตรวจสอบ", count: getStatusCount("pending") },
                   { key: "approved", label: "อนุมัติแล้ว", count: getStatusCount("approved") },
                   { key: "rejected", label: "ปฏิเสธ", count: getStatusCount("rejected") },
-                  // { key: "used", label: "ใช้งานแล้ว", count: getStatusCount("used") },
+                  { key: "used", label: "ใช้งานแล้ว", count: getStatusCount("used") },
                 ].map(({ key, label, count }) => (
                   <button
                     key={key}
                     onClick={() => setFilter(key)}
                     className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                      filter === key ? "bg-yellow-400 text-white" : "bg-gray-200 text-gray-500 hover:bg-gray-300"
+                      filter === key ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                     }`}
                   >
                     {label} ({count})
@@ -358,70 +313,15 @@ function PaymentSlipManagement() {
               </div>
             </div>
 
-            {/* Date Filter (พ.ศ.) */}
+            {/* Date Filter */}
             <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-2">กรองตามวันที่ (พ.ศ.)</label>
-              <div className="grid grid-cols-3 gap-2">
-                <select
-                  value={filterDay}
-                  onChange={(e) => {
-                    const v = e.target.value
-                    setFilterDay(v)
-                    updateDateFilterFromBE(v, filterMonth, filterYearBE)
-                  }}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                >
-                  <option value="">วัน</option>
-                  {Array.from({ length: getDaysInMonth(filterMonth, filterYearBE ? Number(filterYearBE) - 543 : today.getFullYear()) }, (_, i) => i + 1).map((d) => (
-                    <option key={d} value={d}>{d}</option>
-                  ))}
-                </select>
-                <select
-                  value={filterMonth}
-                  onChange={(e) => {
-                    const v = e.target.value
-                    setFilterMonth(v)
-                    // reset day if overflow
-                    const maxDays = getDaysInMonth(v, filterYearBE ? Number(filterYearBE) - 543 : today.getFullYear())
-                    if (filterDay && Number(filterDay) > maxDays) setFilterDay(String(maxDays))
-                    updateDateFilterFromBE(filterDay && Number(filterDay) <= maxDays ? filterDay : String(maxDays), v, filterYearBE)
-                  }}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                >
-                  <option value="">เดือน</option>
-                  {months.map((m) => (
-                    <option key={m.value} value={m.value}>{m.label}</option>
-                  ))}
-                </select>
-                <select
-                  value={filterYearBE}
-                  onChange={(e) => {
-                    const v = e.target.value
-                    setFilterYearBE(v)
-                    const maxDays = getDaysInMonth(filterMonth, v ? Number(v) - 543 : today.getFullYear())
-                    if (filterDay && Number(filterDay) > maxDays) setFilterDay(String(maxDays))
-                    updateDateFilterFromBE(filterDay && Number(filterDay) <= maxDays ? filterDay : String(maxDays), filterMonth, v)
-                  }}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                >
-                  <option value="">ปี (พ.ศ.)</option>
-                  {yearsBE.map((y) => (
-                    <option key={y} value={y}>{y}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="mt-2 flex items-center gap-2">
-                {/* <span className="text-sm text-gray-600">ค่าที่ใช้กับ API:</span> */}
-                {/* <span className="text-sm font-medium">{dateFilter || "-"}</span> */}
-                {dateFilter && (
-                  <button
-                    onClick={() => { setFilterDay(""); setFilterMonth(""); setFilterYearBE(""); setDateFilter("") }}
-                    className="ml-auto px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 rounded"
-                  >
-                    ล้างค่า
-                  </button>
-                )}
-              </div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">กรองตามวันที่</label>
+              <input
+                type="date"
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+              />
             </div>
 
             {/* Search */}
@@ -576,8 +476,8 @@ function PaymentSlipManagement() {
 
         {/* Reject Modal */}
         {showRejectModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={() => { setShowRejectModal(null); setRejectNote("") }}>
-            <div className="bg-white rounded-lg max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-md w-full">
               <div className="p-6">
                 <h3 className="text-lg font-semibold mb-4 text-red-600">⚠️ ปฏิเสธสลิปและยกเลิกการจอง</h3>
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
@@ -630,8 +530,8 @@ function PaymentSlipManagement() {
 
         {/* Slip Detail Modal */}
         {selectedSlip && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedSlip(null)}>
-            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               <div className="p-6 border-b">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-semibold">รายละเอียดสลิปการจ่ายเงิน</h2>
@@ -649,7 +549,7 @@ function PaymentSlipManagement() {
                   <h3 className="text-lg font-medium mb-3">สลิปการจ่ายเงิน</h3>
                   <div className="border rounded-lg overflow-hidden">
                     <img
-                      src={buildUrl(selectedSlip.slip_path)}
+                      src={`http://localhost:5000${selectedSlip.slip_path}`}
                       alt="Payment slip"
                       className="w-full max-w-md mx-auto"
                       onError={(e) => {
@@ -704,7 +604,7 @@ function PaymentSlipManagement() {
                   </div>
                 </div>
 
-                {/* Action Buttons
+                {/* Action Buttons */}
                 {selectedSlip.status === "pending" && (
                   <div className="mt-6 flex space-x-3">
                     <button
@@ -729,7 +629,7 @@ function PaymentSlipManagement() {
                       ปฏิเสธและยกเลิกการจอง
                     </button>
                   </div>
-                )} */}
+                )}
 
                 {/* Warning for rejected slips */}
                 {selectedSlip.status === "rejected" && (
@@ -751,8 +651,8 @@ function PaymentSlipManagement() {
 
         {/* Success/Error Modal */}
         {showSuccessModal.show && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fadeIn" onClick={() => setShowSuccessModal({ show: false, message: "", type: "" })}>
-            <div className="bg-white rounded-xl max-w-md w-full transform transition-all duration-300 scale-100 shadow-2xl border-0 animate-slideIn" onClick={(e) => e.stopPropagation()}>
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fadeIn">
+            <div className="bg-white rounded-xl max-w-md w-full transform transition-all duration-300 scale-100 shadow-2xl border-0 animate-slideIn">
               <div className="p-8 text-center relative">
                 {/* Close button */}
                 <button
@@ -809,7 +709,7 @@ function PaymentSlipManagement() {
               </div>
             </div>
           </div>
-        )}
+                 )}
         </div>
       </div>
     </>
