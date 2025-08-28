@@ -5,6 +5,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { FiHome, FiUser } from "react-icons/fi";
 import { fetchWithAuth } from './fetchWithAuth';
+import { buildUrl } from '../../utils/api';
 
 function History() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ function History() {
   useEffect(() => {
     // ตรวจสอบ Token
     const checkToken = async () => {
-      const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);
+      const response = await fetchWithAuth('/api/checkToken', {}, navigate);
       if (!response) {
         return;
       }
@@ -27,7 +28,7 @@ function History() {
     // ดึงประวัติการจองและเรียงจากใหม่ไปเก่า
     const fetchHistory = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/user/history', {
+        const res = await fetch(buildUrl('/api/user/history'), {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,

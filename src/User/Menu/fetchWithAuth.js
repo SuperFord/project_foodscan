@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+import { buildUrl } from '../../utils/api';
 
 export async function fetchWithAuth(url, options = {}, navigate) {
   const token = localStorage.getItem('token');
@@ -24,7 +25,8 @@ export async function fetchWithAuth(url, options = {}, navigate) {
   };
 
   try {
-    const response = await fetch(url, { ...options, headers });
+    const finalUrl = (String(url).startsWith('http://') || String(url).startsWith('https://')) ? url : buildUrl(url);
+    const response = await fetch(finalUrl, { ...options, headers });
 
     // ถ้า status เป็น 401, 403 หรือ 404 หรือ 500 ก็จะทำการแจ้งเตือน
     if (response.status === 401 || response.status === 403) {

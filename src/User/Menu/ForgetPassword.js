@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { buildUrl } from '../../utils/api';
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
 
@@ -36,7 +37,7 @@ function ForgetPassword() {
       setPasswordMismatch(false); // รีเซ็ตเมื่อรหัสผ่านตรงกัน
 
       try {
-        const response = await fetch('http://localhost:5000/forget-password', {
+        const response = await fetch(buildUrl('/forget-password'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

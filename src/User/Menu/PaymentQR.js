@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { QRCodeCanvas } from "qrcode.react"
+import { buildUrl } from '../../utils/api'
 import generatePayload from "promptpay-qr"
 import { CheckCircle, AlertTriangle, Loader2, Upload, X, Clock, CreditCard, Smartphone } from "lucide-react"
 
@@ -40,7 +41,7 @@ function PaymentQR() {
   const fetchQRSettings = async () => {
     try {
       // ใช้ endpoint สาธารณะสำหรับดึงเลขพร้อมเพย์
-      const response = await fetch("http://localhost:5000/api/settings/promptpay")
+      const response = await fetch(buildUrl('/api/settings/promptpay'))
       const data = await response.json()
 
       if (data.success) {
@@ -91,7 +92,7 @@ function PaymentQR() {
 
     try {
       const token = localStorage.getItem("token")
-      const response = await fetch("http://localhost:5000/api/upload-payment-slip", {
+      const response = await fetch(buildUrl('/api/upload-payment-slip'), {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

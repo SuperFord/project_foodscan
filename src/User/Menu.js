@@ -12,7 +12,7 @@ function Menu() {
   // เช็ค token ถ้าไม่มี token จะเปลี่ยนเส้นทางไปหน้า /User
   useEffect(() => {
     const checkToken = async () => {
-      const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
+      const response = await fetchWithAuth('/api/checkToken', {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
       if (!response) {
         // fetchWithAuth จะ redirect ไป /User ให้อยู่แล้วถ้า token หมดอายุ
         return;
