@@ -1,0 +1,42 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="#FF6B35" stroke="#E55A2B" stroke-width="8"/>
+  
+  <!-- House/Kitchen building -->
+  <rect x="180" y="200" width="152" height="120" fill="#8B4513" stroke="#654321" stroke-width="4"/>
+  <rect x="200" y="220" width="30" height="30" fill="#87CEEB" stroke="#4682B4" stroke-width="2"/>
+  <rect x="282" y="220" width="30" height="30" fill="#87CEEB" stroke="#4682B4" stroke-width="2"/>
+  
+  <!-- Roof -->
+  <path d="M160 200 L256 140 L352 200 Z" fill="#A0522D" stroke="#8B4513" stroke-width="4"/>
+  
+  <!-- Chimney -->
+  <rect x="240" y="120" width="20" height="40" fill="#696969" stroke="#2F4F4F" stroke-width="2"/>
+  <rect x="235" y="115" width="30" height="10" fill="#696969" stroke="#2F4F4F" stroke-width="2"/>
+  
+  <!-- Smoke -->
+  <circle cx="250" cy="110" r="8" fill="#D3D3D3" opacity="0.7"/>
+  <circle cx="245" cy="105" r="6" fill="#D3D3D3" opacity="0.5"/>
+  <circle cx="255" cy="108" r="5" fill="#D3D3D3" opacity="0.6"/>
+  
+  <!-- Food plate -->
+  <circle cx="256" cy="380" r="40" fill="#F5F5DC" stroke="#DEB887" stroke-width="3"/>
+  <circle cx="256" cy="380" r="35" fill="#FFE4B5" stroke="#DEB887" stroke-width="2"/>
+  
+  <!-- Chopsticks -->
+  <rect x="200" y="340" width="4" height="80" fill="#8B4513" stroke="#654321" stroke-width="1"/>
+  <rect x="210" y="340" width="4" height="80" fill="#8B4513" stroke="#654321" stroke-width="1"/>
+  
+  <!-- Spoon -->
+  <ellipse cx="320" cy="380" rx="15" ry="8" fill="#C0C0C0" stroke="#808080" stroke-width="2"/>
+  <rect x="320" y="340" width="3" height="40" fill="#C0C0C0" stroke="#808080" stroke-width="1"/>
+  
+  <!-- Food items on plate -->
+  <circle cx="250" cy="375" r="8" fill="#FF6347"/>
+  <circle cx="265" cy="385" r="6" fill="#32CD32"/>
+  <circle cx="240" cy="390" r="7" fill="#FFD700"/>
+  
+  <!-- Restaurant name text -->
+  <text x="256" y="480" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#8B4513">ครัวบ้านสวน</text>
+</svg>
+
