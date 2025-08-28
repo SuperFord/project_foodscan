@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+import { buildUrl } from '../../utils/api';
 
 export async function fetchWithAuth(url, options = {}, navigate) {
   const token = localStorage.getItem('token');
@@ -12,7 +13,7 @@ export async function fetchWithAuth(url, options = {}, navigate) {
       timer: 2000, // รอ 2 วินาที แล้วไปหน้า Login อัตโนมัติ
       timerProgressBar: true,
     }).then(() => {
-      if (navigate) navigate('/User'); // Redirect to login
+      if (navigate) navigate('/user'); // Redirect to login
     });
     return null;
   }
@@ -24,7 +25,8 @@ export async function fetchWithAuth(url, options = {}, navigate) {
   };
 
   try {
-    const response = await fetch(url, { ...options, headers });
+    const finalUrl = (String(url).startsWith('http://') || String(url).startsWith('https://')) ? url : buildUrl(url);
+    const response = await fetch(finalUrl, { ...options, headers });
 
     // ถ้า status เป็น 401, 403 หรือ 404 หรือ 500 ก็จะทำการแจ้งเตือน
     if (response.status === 401 || response.status === 403) {
@@ -35,7 +37,7 @@ export async function fetchWithAuth(url, options = {}, navigate) {
         confirmButtonText: 'ตกลง'
       }).then(() => {
         localStorage.removeItem('token');
-        if (navigate) navigate('/User'); // Redirect กลับหน้า login
+        if (navigate) navigate('/user'); // Redirect กลับหน้า login
       });
       return null;
     }

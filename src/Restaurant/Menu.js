@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { buildUrl } from "../utils/api";
 import { Link, useNavigate } from "react-router-dom";
 import menuImg from "./img/menu.png";
 import tableImg from "./img/table.png";
@@ -20,7 +21,7 @@ function Menu() {
 
   const checkTableLayout = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/table_layout");
+      const response = await fetch(buildUrl("/api/table_layout"));
       const result = await response.json();
       if (result.success && result.tables.length > 0) {
         setHasTableLayout(true); // ถ้ามีข้อมูลให้ไปหน้า Table_map
@@ -40,17 +41,17 @@ function Menu() {
   const handleLogout = () => {
     localStorage.removeItem('restaurantToken');
     localStorage.removeItem('restaurantAdmin');
-    navigate('/Restaurant/Login');
+            navigate('/restaurant-login');
   };
 
   const menuItems = [
-    { id: 1, name: "จัดการอาหาร", image: menuImg, path: "./Listfood" },
-    { id: 2, name: "จัดการแผนผังโต๊ะและเวลาเปิด - ปิด", image: tableImg, path: hasTableLayout ? "./TableMap" : "./TableLayouts" },
-    { id: 3, name: "รายการจองโต๊ะ", image: notibellImg, path: "./TableReservation" },
-    { id: 4, name: "สถานะโต๊ะ", image: statustableImg, path: "./TableStatus" },
-    { id: 5, name: "ประวัติการจองโต๊ะทั้งหมด", image: historyImg, path: "./History" },
+    { id: 1, name: "จัดการอาหาร", image: menuImg, path: "/listfood" },
+    { id: 2, name: "จัดการแผนผังโต๊ะและเวลาเปิด - ปิด", image: tableImg, path: hasTableLayout ? "/table-map" : "/table-layouts" },
+    { id: 3, name: "รายการจองโต๊ะ", image: notibellImg, path: "/table-reservation" },
+    { id: 4, name: "สถานะโต๊ะ", image: statustableImg, path: "/table-status" },
+    { id: 5, name: "ประวัติการจองโต๊ะทั้งหมด", image: historyImg, path: "/restaurant-history" },
     { id: 6, name: "ตั้งค่า QR การชำระเงิน", image: QrImg, path: "/QRSettings" },
-    { id: 7, name: "จัดการสลิปและจองโต๊ะ", image: QrandtableImg, path: "./PaymentSlipManagement" },
+    { id: 7, name: "จัดการสลิปและจองโต๊ะ", image: QrandtableImg, path: "/payment-slip-management" },
   ];
   
   return (
@@ -78,15 +79,15 @@ function Menu() {
         <div className="w-2/3 h-0.5 bg-yellow-200 mx-auto mt-3"></div>
       </div>
 
-      <div className="flex flex-col items-center gap-4 p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4 max-w-7xl mx-auto">
         {menuItems.map((item) => (
           <Link
             key={item.id}
             to={item.path}
-            className="block bg-yellow-200 border border-gray-300 rounded-xl shadow-lg hover:shadow-2xl transition-transform transform hover:scale-105 p-6 text-center w-64"
+            className="block bg-yellow-200 border border-gray-300 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 p-6 text-center w-full"
           >
-            <img src={item.image} alt={item.name} className="w-24 h-24 object-cover mx-auto rounded-md" />
-            <div className="mt-4 text-lg font-semibold">{item.name}</div>
+            <img src={item.image} alt={item.name} className="w-20 h-20 object-cover mx-auto rounded-md mb-3" />
+            <div className="text-base font-semibold text-gray-800 leading-tight">{item.name}</div>
           </Link>
         ))}
       </div>

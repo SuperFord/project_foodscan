@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { buildUrl } from "../../utils/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 
@@ -23,14 +24,14 @@ export default function ListFoodEdit() {
 
   const fetchMenuData = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/menus/${id}`);
+      const response = await fetch(buildUrl(`/api/menus/${id}`));
       const result = await response.json();
       if (result.success) {
         setMenuName(result.menu.name);
         setPrice(result.menu.price);
         setDescription(result.menu.description);
         setCategory(result.menu.category);
-        setImageUrl(`http://localhost:5000${result.menu.image_url}`);
+        setImageUrl(buildUrl(result.menu.image_url));
       } else {
         console.error("ไม่พบเมนู");
       }
@@ -71,6 +72,14 @@ export default function ListFoodEdit() {
       return;
     }
 
+    // ดึง token จาก localStorage
+    const token = localStorage.getItem('restaurantToken');
+    if (!token) {
+      alert('กรุณาเข้าสู่ระบบใหม่');
+      navigate('/restaurant-login');
+      return;
+    }
+
     const formData = new FormData();
     formData.append("name", menuName);
     formData.append("price", price);
@@ -81,34 +90,37 @@ export default function ListFoodEdit() {
       formData.append("image", file); // ใช้ไฟล์ที่อัปโหลดใหม่
     }
 
-    console.log("🔹 ส่งข้อมูลไปที่ API:", formData);
-
     try {
-      const response = await fetch(`http://localhost:5000/api/menus/${id}`, {
+      const response = await fetch(buildUrl(`/api/menus/${id}`), {
         method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
         body: formData,
       });
 
-      console.log("🔹 API Response:", response);
-
-      const result = await response.json();
-      console.log("🔹 API Result:", result);
-
-      if (result.success) {
-        alert("✅ อัปเดตข้อมูลสำเร็จ!");
-        navigate("/Restaurant/Menu/Listfood");
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          alert("✅ อัปเดตข้อมูลสำเร็จ!");
+          navigate("/listfood");
+        } else {
+          alert("❌ เกิดข้อผิดพลาดในการอัปเดต!");
+        }
+      } else if (response.status === 401) {
+        alert('เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+        navigate('/restaurant-login');
       } else {
         alert("❌ เกิดข้อผิดพลาดในการอัปเดต!");
       }
     } catch (error) {
-      console.error("❌ Error:", error);
       alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์!");
     }
   };
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/categories");
+      const response = await fetch(buildUrl("/api/categories"));
       const data = await response.json();
       if (data.success) {
         const names = data.categories.map(cat => cat.name);
@@ -123,26 +135,42 @@ export default function ListFoodEdit() {
   const handleAddCategory = async () => {
     if (!newCategory.trim()) return;
   
+    // ดึง token จาก localStorage
+    const token = localStorage.getItem('restaurantToken');
+    if (!token) {
+      alert('กรุณาเข้าสู่ระบบใหม่');
+      navigate('/restaurant-login');
+      return;
+    }
+
     try {
-      const response = await fetch("http://localhost:5000/api/category", {
+      const response = await fetch(buildUrl("/api/category"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ name: newCategory.trim() }),
       });
   
-      const result = await response.json();
-      if (result.success) {
-        setCategoryOptions(prev => [...prev, newCategory]); // เพิ่มใน dropdown
-        setCategory(newCategory); // ตั้งค่าหมวดหมู่ที่เลือกให้เป็นอันใหม่
-        setNewCategory("");
-        setShowAddCategory(false);
-    } else {
-      alert("ไม่สามารถเพิ่มหมวดหมู่ได้");
-    }
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          setCategoryOptions(prev => [...prev, newCategory]); // เพิ่มใน dropdown
+          setCategory(newCategory); // ตั้งค่าหมวดหมู่ที่เลือกให้เป็นอันใหม่
+          setNewCategory("");
+          setShowAddCategory(false);
+        } else {
+          alert("ไม่สามารถเพิ่มหมวดหมู่ได้");
+        }
+      } else if (response.status === 401) {
+        alert('เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+        navigate('/restaurant-login');
+      } else {
+        alert("ไม่สามารถเพิ่มหมวดหมู่ได้");
+      }
     } catch (error) {
-      console.error('เกิดข้อผิดพลาด:', error);
+      alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์!");
     }
   };
 
@@ -150,7 +178,7 @@ export default function ListFoodEdit() {
     <div className="w-full h-screen bg-white flex flex-col items-center">
       {/* Header */}
       <div className="w-full flex items-center justify-between bg-yellow-400 p-4 text-white">
-        <FaArrowLeft className="text-2xl cursor-pointer ml-4" onClick={() => navigate("/Restaurant/Menu/Listfood")} />
+        <FaArrowLeft className="text-2xl cursor-pointer ml-4" onClick={() => navigate("/listfood")} />
         <h1 className="flex-grow text-3xl font-bold text-center p-2">แก้ไขรายการอาหาร</h1>
       </div>
 

@@ -5,6 +5,7 @@ import { FiHome, FiUser } from "react-icons/fi"; // ไอคอนแบบเ�
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2';
 import { fetchWithAuth } from './fetchWithAuth';
+import { buildUrl } from '../../utils/api';
 
 function Detail() {
   const [reservation, setReservation] = useState(null);
@@ -17,7 +18,7 @@ function Detail() {
   useEffect(() => {
     const checkAuthAndData = async () => {
       // 1. ตรวจสอบ token ก่อน
-      const response = await fetchWithAuth("http://localhost:5000/api/checkToken", {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
+      const response = await fetchWithAuth('/api/checkToken', {}, navigate);  // ใช้ fetchWithAuth ในการเช็ค token
       if (!response || !response.ok) {
         // ถ้า token ไม่ valid จะถูก redirect แล้ว ไม่ต้องทำต่อ
         return;
@@ -26,12 +27,12 @@ function Detail() {
       // 2. ดึงข้อมูลร้าน และการจอง ถ้า token ผ่าน
       try {
         // ดึงชื่อร้าน
-        const restaurantRes = await fetch("http://localhost:5000/api/Nrestaurant");
+        const restaurantRes = await fetch(buildUrl('/api/Nrestaurant'));
         const restaurantData = await restaurantRes.json();
         setRestaurantName(restaurantData.name);
 
         // ดึงข้อมูลการจองของวันนี้
-        const res = await fetch("http://localhost:5000/api/reservation/today", {
+        const res = await fetch(buildUrl('/api/reservation/today'), {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -57,7 +58,7 @@ function Detail() {
 
           // ดึงสถานะสลิปของผู้ใช้ล่าสุดเพื่อแสดงแบนเนอร์สถานะ
           try {
-            const resp = await fetch('http://localhost:5000/api/user/payment-slips', {
+            const resp = await fetch(buildUrl('/api/user/payment-slips'), {
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json',
@@ -75,16 +76,19 @@ function Detail() {
                 } else if (matched.status === 'approved' || matched.status === 'used') {
                   setPaymentStatusBanner({ type: 'approved', text: 'ชำระเงินได้รับการยืนยันแล้ว ระบบได้บันทึกการจองของคุณ' });
                 } else if (matched.status === 'rejected') {
-                  setPaymentStatusBanner({ type: 'rejected', text: 'การชำระเงินถูกปฏิเสธ การจองถูกยกเลิก หากสงสัยโปรดติดต่อร้าน' });
+                  // ตรวจสอบว่ามีรายการสั่งอาหารหรือไม่ ถ้าไม่มีก็ไม่แสดงข้อความการปฏิเสธ
+                  if (todayReservation.foodorder && todayReservation.foodorder.length > 0) {
+                    setPaymentStatusBanner({ type: 'rejected', text: 'การชำระเงินถูกปฏิเสธ การจองถูกยกเลิก หากสงสัยโปรดติดต่อร้าน' });
+                  }
                 }
               }
             }
           } catch (e) {
-            console.error('Error fetching user slips:', e);
+            // Error handling without console.log
           }
         }
       } catch (err) {
-        console.error("Error fetching data:", err);
+        // Error handling without console.log
       }
     };
 
@@ -101,7 +105,7 @@ function Detail() {
         <div className="bg-yellow-400 w-full flex items-center justify-between p-4 text-white shadow-md">
           <FaArrowLeft
             className="text-2xl cursor-pointer ml-2"
-            onClick={() => navigate("/User/Menu")}
+            onClick={() => navigate("/user-menu")}
           />
           <div className="flex-grow text-3xl font-bold text-center mr-6">
             รายละเอียดการจอง
@@ -138,7 +142,6 @@ function Detail() {
               <p className="text-lg font-semibold mb-2 "><strong>เวลานัด:</strong> <span className="text-yellow-500 font-semibold">{reservation.time}</span></p>
               <p className="text-lg font-semibold mb-2 "><strong>วันที่นัด:</strong> <span className="text-yellow-500 font-semibold">{reservation.date}</span></p>
               <p className="text-lg font-semibold mb-2 "><strong>รายละเอียดเพิ่มเติม:</strong> <span className="text-yellow-500 font-semibold">{reservation.detail || '-'}</span></p>
-              <p className="text-lg font-semibold mb-2 "><strong>รหัสอ้างอิง:</strong> <span className="text-yellow-500 font-semibold">LYG00001</span></p>
               <div className="mb-4">
                 <h4 className="text-lg font-semibold mb-2">รายการอาหาร</h4>
                 <table className="w-full border border-black text-sm">
@@ -188,7 +191,7 @@ function Detail() {
 
                   if (result.isConfirmed) {
                     try {
-                      const response = await fetch("http://localhost:5000/api/reservation/cancel", {
+                      const response = await fetch(buildUrl('/api/reservation/cancel'), {
                         method: "DELETE",
                         headers: {
                           "Content-Type": "application/json",
@@ -215,7 +218,7 @@ function Detail() {
                               'bg-yellow-400 text-white font-bold',
                           },
                         }).then(() => {
-                          navigate("/User/Menu");
+                          navigate("/user-menu");
                         });
                       } else {
                         Swal.fire('ผิดพลาด', data.message || 'ไม่สามารถยกเลิกการจองได้', 'error');
@@ -236,10 +239,10 @@ function Detail() {
 
         {/* แถบนำทางด้านล่าง */}
         <div className="fixed bottom-0 left-0 w-full bg-gray-900 text-white flex justify-around items-center py-4">
-          <Link to="/User/Menu" className="flex-1 flex justify-center items-center">
+          <Link to="/user-menu" className="flex-1 flex justify-center items-center">
             <FiHome className="text-3xl text-gray-400 hover:text-white transition" />
           </Link>
-          <Link to="/User/Menu/Setting" className="flex-1 flex justify-center items-center">
+          <Link to="/user-setting" className="flex-1 flex justify-center items-center">
             <FiUser className="text-3xl text-gray-400 hover:text-white transition" />
           </Link>
         </div>

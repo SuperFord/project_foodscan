@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { buildUrl } from '../../utils/api';
 
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
@@ -11,12 +12,12 @@ const ProtectedRoute = ({ children }) => {
       const token = localStorage.getItem('restaurantToken');
       
       if (!token) {
-        navigate('/Restaurant/Login');
+        navigate('/restaurant-login');
         return;
       }
 
       try {
-        const response = await fetch('http://localhost:5000/api/restaurant/verify', {
+        const response = await fetch(buildUrl('/api/restaurant/verify'), {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -28,13 +29,13 @@ const ProtectedRoute = ({ children }) => {
           // Token ไม่ถูกต้องหรือหมดอายุ
           localStorage.removeItem('restaurantToken');
           localStorage.removeItem('restaurantAdmin');
-          navigate('/Restaurant/Login');
+          navigate('/restaurant-login');
         }
       } catch (error) {
         console.error('Auth verification error:', error);
         localStorage.removeItem('restaurantToken');
         localStorage.removeItem('restaurantAdmin');
-        navigate('/Restaurant/Login');
+        navigate('/restaurant-login');
       } finally {
         setIsLoading(false);
       }

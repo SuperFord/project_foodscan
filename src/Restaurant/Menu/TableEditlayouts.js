@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { buildUrl } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaUpload } from "react-icons/fa";
 
@@ -21,13 +22,13 @@ function TableEditlayouts() {
 
   const fetchExistingData = async () => {
     try {
-        const mapResponse = await fetch("http://localhost:5000/api/table_map");
+        const mapResponse = await fetch(buildUrl('/api/table_map'));
         const mapResult = await mapResponse.json();
         if (mapResult.success && mapResult.table_maps.length > 0) {
-          setImageUrl(`http://localhost:5000${mapResult.table_maps[0].image_path}`);
+          setImageUrl(buildUrl(mapResult.table_maps[0].image_path));
         }
   
-        const layoutResponse = await fetch("http://localhost:5000/api/table_layout");
+        const layoutResponse = await fetch(buildUrl('/api/table_layout'));
         const layoutResult = await layoutResponse.json();
         if (layoutResult.success) {
           const tables = layoutResult.tables;
@@ -46,7 +47,10 @@ function TableEditlayouts() {
 
   const fetchReservationWindow = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/settings/reservation-window");
+      const token = localStorage.getItem("restaurantToken");
+      const res = await fetch(buildUrl('/api/settings/reservation-window'), {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
       const data = await res.json();
       if (data.success) {
         setOpenTime(data.openTime || "");
@@ -59,9 +63,10 @@ function TableEditlayouts() {
 
   const saveReservationWindow = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/settings/reservation-window", {
+      const token = localStorage.getItem("restaurantToken");
+      const res = await fetch(buildUrl('/api/settings/reservation-window'), {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
         body: JSON.stringify({
           enabled: true,
           openTime,
@@ -71,7 +76,7 @@ function TableEditlayouts() {
       const data = await res.json();
       if (data.success) {
         alert("บันทึกเวลาเปิด/ปิดการจองสำเร็จ");
-        navigate("/Restaurant/Menu/TableMap");
+        navigate("/table-map");
       } else {
         alert(data.message || "บันทึกเวลาไม่สำเร็จ");
       }
@@ -95,14 +100,14 @@ function TableEditlayouts() {
     }
   
     // ดึงข้อมูลปัจจุบัน
-    fetch("http://localhost:5000/api/table_map")
+    fetch(buildUrl('/api/table_map'))
       .then((res) => res.json())
       .then((mapResult) => {
         const currentImageUrl = mapResult.success && mapResult.table_maps.length > 0
-          ? `http://localhost:5000${mapResult.table_maps[0].image_path}`
+          ? buildUrl(mapResult.table_maps[0].image_path)
           : null;
-  
-        return fetch("http://localhost:5000/api/table_layout");
+
+        return fetch(buildUrl('/api/table_layout'));
       })
       .then((res) => res.json())
       .then((layoutResult) => {
@@ -135,9 +140,9 @@ function TableEditlayouts() {
         }
   
         // ส่งข้อมูลไปยัง server.js ให้จัดการลบเอง
-        fetch("http://localhost:5000/api/delete_table_data", {
+        fetch(buildUrl('/api/delete_table_data'), {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...(localStorage.getItem("restaurantToken") ? { Authorization: `Bearer ${localStorage.getItem("restaurantToken")}` } : {}) },
           body: JSON.stringify({
             imageChanged,
             tnameChanged,
@@ -152,8 +157,9 @@ function TableEditlayouts() {
               const imageFormData = new FormData();
               imageFormData.append("image", file);
               uploadPromises.push(
-                fetch("http://localhost:5000/api/table_map", {
+                fetch(buildUrl('/api/table_map'), {
                   method: "POST",
+                  headers: (localStorage.getItem("restaurantToken") ? { Authorization: `Bearer ${localStorage.getItem("restaurantToken")}` } : {}),
                   body: imageFormData,
                 })
               );
@@ -166,16 +172,17 @@ function TableEditlayouts() {
               layoutFormData.append("tname", formattedTname);
               layoutFormData.append("time_required", timeRequired);
               uploadPromises.push(
-                fetch("http://localhost:5000/api/table_layout", {
+                fetch(buildUrl('/api/table_layout'), {
                   method: "POST",
+                  headers: (localStorage.getItem("restaurantToken") ? { Authorization: `Bearer ${localStorage.getItem("restaurantToken")}` } : {}),
                   body: layoutFormData,
                 })
               );
             } else if (timeRequired) {
               uploadPromises.push(
-                fetch("http://localhost:5000/api/table_layout/time-required", {
+                fetch(buildUrl('/api/table_layout/time-required'), {
                   method: "PUT",
-                  headers: { "Content-Type": "application/json" },
+                  headers: { "Content-Type": "application/json", ...(localStorage.getItem("restaurantToken") ? { Authorization: `Bearer ${localStorage.getItem("restaurantToken")}` } : {}) },
                   body: JSON.stringify({ time_required: timeRequired })
                 })
               );
@@ -185,9 +192,9 @@ function TableEditlayouts() {
           })
           .then(async () => {
             // บันทึกเวลาเปิด/ปิดการจอง (สำหรับผู้ใช้) ก่อน navigate
-            const res = await fetch("http://localhost:5000/api/settings/reservation-window", {
+            const res = await fetch(buildUrl('/api/settings/reservation-window'), {
               method: "PUT",
-              headers: { "Content-Type": "application/json" },
+              headers: { "Content-Type": "application/json", ...(localStorage.getItem("restaurantToken") ? { Authorization: `Bearer ${localStorage.getItem("restaurantToken")}` } : {}) },
               body: JSON.stringify({ enabled: true, openTime, closeTime })
             });
             const ok = await res.json();
@@ -195,7 +202,7 @@ function TableEditlayouts() {
               alert("บันทึกเวลาเปิด/ปิดการจองไม่สำเร็จ");
             }
             alert("บันทึกข้อมูลสำเร็จ!");
-            navigate("/Restaurant/Menu/TableMap");
+            navigate("/table-map");
           })
           .catch((error) => {
             console.error("Error:", error);
@@ -214,7 +221,7 @@ function TableEditlayouts() {
       <div className="w-full flex items-center justify-between bg-yellow-400 p-4 text-white">
         <FaArrowLeft
           className="text-2xl cursor-pointer ml-4"
-          onClick={() => navigate("/Restaurant/Menu/TableMap")}
+          onClick={() => navigate("/table-map")}
         />
         <h1 className="flex-grow text-3xl font-bold text-center p-2">จัดการแผนผังโต๊ะ</h1>
       </div>
@@ -279,7 +286,7 @@ function TableEditlayouts() {
           value={tname}
           onChange={(e) => setTname(e.target.value)}
         ></textarea>
-        <label className="block font-bold text-red-600 mt-4 text-right">* กรอกชื่อโต๊ะคั่นด้วย , เช่น T01,T02 *</label>
+        <label className="block font-bold text-red-600 mt-1 text-right">* กรอกชื่อโต๊ะคั่นด้วย , เช่น T01,T02 *</label>
 
         <div className="mt-4 w-full">
         <label className="block font-bold text-black mb-1">🕒 เวลาที่ต้องมารับโต๊ะ</label>

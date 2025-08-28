@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { QRCodeCanvas } from "qrcode.react"
+import { buildUrl } from '../../utils/api'
 import generatePayload from "promptpay-qr"
 import { CheckCircle, AlertTriangle, Loader2, Upload, X, Clock, CreditCard, Smartphone } from "lucide-react"
 
@@ -39,22 +40,20 @@ function PaymentQR() {
 
   const fetchQRSettings = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/settings/qr-payment")
+      // ใช้ endpoint สาธารณะสำหรับดึงเลขพร้อมเพย์
+      const response = await fetch(buildUrl('/api/settings/promptpay'))
       const data = await response.json()
 
-      console.log("QR Settings fetched:", data)
-
       if (data.success) {
-        setQrEnabled(data.enableQR || false)
+        // ใช้ข้อมูลจาก promptpay endpoint
+        setQrEnabled(true) // สมมติว่าเปิดใช้งานถ้ามีเลขพร้อมเพย์
         setPromptpayNumber(data.promptpayNumber || "")
       } else {
         setError("ไม่สามารถโหลดการตั้งค่า QR ได้")
       }
       setLoading(false)
     } catch (err) {
-      console.error("Error fetching QR settings:", err)
-      setError("เกิดข้อผิดพลาดในการโหลดข้อมูล")
-      setLoading(false)
+      // Error handling without console.log
     }
   }
 
@@ -93,7 +92,7 @@ function PaymentQR() {
 
     try {
       const token = localStorage.getItem("token")
-      const response = await fetch("http://localhost:5000/api/upload-payment-slip", {
+      const response = await fetch(buildUrl('/api/upload-payment-slip'), {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -110,12 +109,11 @@ function PaymentQR() {
           uploadId: data.uploadId,
         })
         setShowUploadSection(false)
-        console.log("✅ Payment slip uploaded successfully to Payment slip folder")
       } else {
         setUploadError(data.message || "เกิดข้อผิดพลาดในการอัปโหลด")
       }
     } catch (err) {
-      console.error("Upload error:", err)
+      // Error handling without console.log
       setUploadError("เกิดข้อผิดพลาดในการอัปโหลด")
     } finally {
       setUploading(false)
@@ -250,7 +248,7 @@ function PaymentQR() {
   try {
     qrData = generatePayload(promptpayNumber, { amount })
   } catch (err) {
-    console.error("Error generating QR payload:", err)
+    // Error handling without console.log
     return (
       <div className="flex items-center justify-center h-screen bg-white">
         <div className="text-center p-8">
@@ -329,10 +327,15 @@ function PaymentQR() {
         <div className="mb-6">
           {!uploadedSlip ? (
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
-              <h3 className="font-semibold text-gray-700 mb-3 flex items-center justify-center">
-                <Upload className="w-4 h-4 mr-2" />
-                อัปโหลดสลิปการโอนเงิน (ไม่บังคับ)
-              </h3>
+              <div className="text-center mb-4">
+                <h3 className="font-semibold text-gray-800 mb-2 flex items-center justify-center">
+                  <Upload className="w-5 h-5 mr-2 text-blue-500" />
+                  กรุณาอัปโหลดสลิปการโอนเงิน
+                </h3>
+                <p className="text-sm text-gray-600 bg-yellow-50 border border-yellow-200 rounded-lg px-3 py-2">
+                  ⚠️ หากไม่อัปโหลดจะยกเลิกการจองอัตโนมัติ
+                </p>
+              </div>
 
               {!showUploadSection ? (
                 <button

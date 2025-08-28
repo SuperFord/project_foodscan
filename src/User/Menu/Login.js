@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { buildUrl } from '../../utils/api';
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { jwtDecode } from 'jwt-decode'; // Corrected import statement
@@ -22,7 +23,7 @@ function Login() {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
+      const response = await fetch(buildUrl('/api/login'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -36,7 +37,7 @@ function Login() {
         // ถ้าเข้าสู่ระบบสำเร็จ
         localStorage.setItem('token', data.token); // เก็บ JWT token ไว้ใน localStorage
         localStorage.setItem('username', username); // เก็บชื่อผู้ใช้
-        navigate("/User/Menu"); // รีไดเรกต์ไปหน้า Menu
+        navigate("/user-menu"); // รีไดเรกต์ไปหน้า Menu
       } else {
         setError(data.message || "ข้อมูลไม่ถูกต้อง");
       }
@@ -58,10 +59,10 @@ function Login() {
           localStorage.removeItem('token'); // ลบ token ออกจาก localStorage
           setTokenExpired(true); // ตั้งค่า state เพื่อแสดงข้อความแจ้งเตือน
           alert('Session ของคุณหมดอายุแล้ว กรุณาล็อกอินใหม่'); // แจ้งเตือน
-          navigate("/User/"); // เปลี่ยนเส้นทางไปที่หน้า login
+          navigate("/user"); // เปลี่ยนเส้นทางไปที่หน้า login
         } else {
           // ถ้า token ยังไม่หมดอายุ, รีไดเรกต์ไปที่หน้า Menu โดยอัตโนมัติ
-          navigate("/User/Menu");
+          navigate("/user-menu");
         }
       } catch (error) {
         console.error("Error decoding token:", error);
@@ -73,10 +74,10 @@ function Login() {
     <div className="w-full h-screen flex flex-col items-center">
       {/* Header */}
       <div className="w-full flex items-center justify-center p-14 text-white gap-10">
-        <Link to="/User/" className="w-40 text-center text-xl font-bold text-yellow-500 border-b-2 border-yellow-500">
+        <Link to="/user" className="w-40 text-center text-xl font-bold text-yellow-500 border-b-2 border-yellow-500">
           ล็อคอิน
         </Link>
-        <Link to="/User/Register" className="w-40 text-center text-xl font-bold text-gray-400 hover:text-yellow-500">
+        <Link to="/user-register" className="w-40 text-center text-xl font-bold text-gray-400 hover:text-yellow-500">
           สมัครสมาชิก
         </Link>
       </div>
@@ -122,7 +123,7 @@ function Login() {
             ลืมรหัสผ่าน
           </Link> */}
 
-          <Link to="/User/RequestReset" className="text-blue-500 hover:text-blue-700">
+          <Link to="/user-request-reset" className="text-blue-500 hover:text-blue-700">
             ลืมรหัสผ่าน
           </Link>
 

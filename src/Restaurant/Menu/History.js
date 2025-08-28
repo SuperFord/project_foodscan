@@ -1,18 +1,43 @@
 import React, { useState, useEffect } from 'react';
+import { buildUrl } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaPlus, FaCog } from "react-icons/fa";
 
 function History() {
   const navigate = useNavigate();
   const [reservations, setReservations] = useState([]);
+  const [error, setError] = useState("");
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/restaurant/history') // แก้ endpoint ให้ตรงกับ backend ของคุณ
-      .then(res => res.json())
-      .then(data => setReservations(data))
-      .catch(err => console.error(err));
-  }, []);
+    const token = localStorage.getItem('restaurantToken');
+    const load = async () => {
+      try {
+        const res = await fetch(buildUrl('/api/restaurant/history'), {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        if (res.status === 401 || res.status === 403) {
+          setError('กรุณาเข้าสู่ระบบแอดมินใหม่');
+          localStorage.removeItem('restaurantToken');
+          localStorage.removeItem('restaurantAdmin');
+          navigate('/restaurant-login');
+          return;
+        }
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setReservations(data);
+        } else if (Array.isArray(data?.reservations)) {
+          setReservations(data.reservations);
+        } else {
+          setReservations([]);
+        }
+      } catch (err) {
+        setError('ไม่สามารถโหลดข้อมูลได้');
+        setReservations([]);
+      }
+    };
+    load();
+  }, [navigate]);
 
   const toggleExpand = (index) => {
     setExpandedIndex(expandedIndex === index ? null : index);
@@ -22,11 +47,11 @@ function History() {
     <div className="w-full h-screen bg-white">
       {/* Header */}
       <div className="w-full flex items-center justify-between bg-yellow-400 p-4 text-white">
-        <FaArrowLeft className="text-2xl cursor-pointer ml-4" onClick={() => navigate("/Restaurant/Menu")} />
+                      <FaArrowLeft className="text-2xl cursor-pointer ml-4" onClick={() => navigate("/restaurant-menu")} />
         <h1 className="flex-grow text-3xl font-bold text-center p-2">ประวัติการจอง</h1>
       </div>
 
-      {reservations.map((res, index) => (
+      {Array.isArray(reservations) && reservations.map((res, index) => (
         <div key={res.id} className="border-b border-gray-300 bg-white">
           {/* แถบบน */}
           <div
@@ -92,6 +117,12 @@ function History() {
           )}
         </div>
       ))}
+      {!reservations?.length && !error && (
+        <div className="p-6 text-center text-gray-500">ไม่มีประวัติการจอง</div>
+      )}
+      {error && (
+        <div className="p-6 text-center text-red-600">{error}</div>
+      )}
     </div>
   );
 }
