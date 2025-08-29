@@ -138,7 +138,7 @@ function Login() {
         {/* สมัครสมาชิก */}
         <label className="block text-1xl text-center text-zinc-600 p-6">
           ยังไม่มีบัญชีใช่หรือไม่?{' '}
-          <Link to="/User/Register" className="text-blue-500 hover:text-blue-700">
+          <Link to="/user-register" className="text-blue-500 hover:text-blue-700">
             สมัครสมาชิก
           </Link>
         </label>
