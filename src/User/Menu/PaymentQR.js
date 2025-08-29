@@ -329,11 +329,11 @@ function PaymentQR() {
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
               <div className="text-center mb-4">
                 <h3 className="font-semibold text-gray-800 mb-2 flex items-center justify-center">
-                  <Upload className="w-5 h-5 mr-2 text-blue-500" />
+                  <Upload className="w-5 h-5 mr-2 text-red-500" />
                   กรุณาอัปโหลดสลิปการโอนเงิน
                 </h3>
-                <p className="text-sm text-gray-600 bg-yellow-50 border border-yellow-200 rounded-lg px-3 py-2">
-                  ⚠️ หากไม่อัปโหลดจะยกเลิกการจองอัตโนมัติ
+                <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                  ⚠️ การอัปโหลดสลิปเป็นสิ่งจำเป็นเพื่อยืนยันการจอง
                 </p>
               </div>
 
@@ -415,21 +415,30 @@ function PaymentQR() {
             <p>1. เปิดแอปธนาคารของคุณ</p>
             <p>2. สแกน QR Code ด้านบน</p>
             <p>3. ตรวจสอบยอดเงินและชำระ</p>
-            <p>4. อัปโหลดสลิปการโอนเงิน (ถ้าต้องการ)</p>
+            <p>4. <strong className="text-red-600">อัปโหลดสลิปการโอนเงิน (จำเป็น)</strong></p>
             <p>5. กลับมายืนยันการจอง</p>
           </div>
+          {!uploadedSlip && (
+            <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-700 text-sm font-medium">
+                ⚠️ คุณต้องอัปโหลดสลิปการโอนเงินก่อนจึงจะสามารถยืนยันการจองได้
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Action Buttons */}
         <div className="space-y-3">
           <button
             onClick={navigateBack}
-            disabled={false}
+            disabled={!uploadedSlip}
             className={`w-full px-6 py-3 rounded-lg font-semibold transition-colors ${
-              "bg-yellow-400 hover:bg-yellow-500 text-white"
+              uploadedSlip 
+                ? "bg-yellow-400 hover:bg-yellow-500 text-white" 
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
           >
-            กลับไปยืนยันการจอง
+            {uploadedSlip ? "กลับไปยืนยันการจอง" : "กรุณาอัปโหลดสลิปก่อน"}
           </button>
 
           <button
