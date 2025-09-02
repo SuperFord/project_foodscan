@@ -92,15 +92,15 @@ function ReserDetail() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col justify-between">
+    <div className="min-h-screen flex flex-col justify-between bg-gray-50">
     {/* Header */}
-    <div className="w-full flex bg-yellow-400 items-center justify-between p-4 text-white">
-                  <FaArrowLeft className="text-3xl cursor-pointer ml-2" onClick={() => navigate("/user-menu")} />
+    <div className="w-full flex bg-yellow-400 items-center justify-between p-4 text-white shadow-md">
+                  <FaArrowLeft className="text-3xl cursor-pointer ml-2 hover:text-yellow-200 transition-colors" onClick={() => navigate("/user-menu")} />
       <div className="flex-grow text-3xl font-bold text-center p-2">รายละเอียดการจอง</div>
     </div>
       {/* Form รายละเอียดข้อมูลการจอง */}
-      <div className="flex justify-center items-center p-4">
-        <div className=" rounded-xl p-4 max-w-md w-full ">        
+      <div className="flex justify-center items-center p-4 flex-1">
+        <div className="rounded-xl p-4 max-w-md w-full">        
           {paymentStatusBanner && (
             <div className={`mb-4 rounded-lg p-3 text-sm font-medium ${
               paymentStatusBanner.type === 'pending'
@@ -112,45 +112,73 @@ function ReserDetail() {
               {paymentStatusBanner.text}
             </div>
           )}
-          <div className="rounded-xl border-2 border-gray-400 p-4 mb-4 ">
-            <h3 className="text-xl font-semibold mb-2 border-b border-gray-400 pb-2">{restaurantName || ''}</h3>
-            <p className="text-lg font-semibold mb-2"><strong>โต๊ะที่เลือก:</strong> <span className="text-yellow-500 font-semibold">{reservation.setable}</span></p>
-            <p className="text-lg font-semibold mb-2"><strong>ชื่อผู้จอง:</strong> <span className="text-yellow-500 font-semibold">{reservation.username}</span></p>
-            <p className="text-lg font-semibold mb-2"><strong>จำนวนคน:</strong> <span className="text-yellow-500 font-semibold">{reservation.people}</span></p>
-            <p className="text-lg font-semibold mb-2"><strong>เวลานัด:</strong> <span className="text-yellow-500 font-semibold">{reservation.time}</span></p>
-            <p className="text-lg font-semibold mb-2"><strong>วันที่นัด:</strong> <span className="text-yellow-500 font-semibold">{reservation.date}</span></p>
-            <p className="text-lg font-semibold mb-2"><strong>รายละเอียดเพิ่มเติม:</strong> <span className="text-yellow-500 font-semibold">{reservation.detail || '-'}</span></p>
-            <p className="text-lg font-semibold mb-2"><strong>รหัสอ้างอิง:</strong> <span className="text-yellow-500 font-semibold">LYG00001</span></p>
-            {/* ตารางเเสดงข้อมสั่งอาหาร */}
-            <div className="mb-4">
-              <h4 className="text-lg font-semibold mb-2">รายการอาหาร</h4>
-              <table className="w-full border border-black text-sm">
-                <thead className="text-sm">
-                  <tr>
-                    <th className="border border-black px-2 py-1">รายการอาหาร</th>
-                    <th className="border border-black px-2 py-1">จำนวน</th>
-                    <th className="border border-black px-2 py-1">ราคาต่อหน่วย</th>
-                    <th className="border border-black px-2 py-1">ราคา</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {reservation.foodorder.map((item, idx) => (
-                    <tr key={idx}>
-                      <td className="border border-black px-2 py-1">{item.name}</td>
-                      <td className="border border-black px-2 py-1 text-center">{item.quantity}</td>
-                      <td className="border border-black px-2 py-1 text-center">{item.price}</td>
-                      <td className="border border-black px-2 py-1 text-center">{item.quantity * item.price}</td>
-                    </tr>
-                  ))}
-                  <tr className=" font-semibold">
-                    <td className="border border-black px-2 py-1 text-center" colSpan="3">ราคารวม</td>
-                    <td className="border border-black px-2 py-1 text-center">{totalPrice}</td>
-                  </tr>
-                </tbody>
-              </table>
+          <div className="rounded-xl border-2 border-gray-400 p-4 mb-4 bg-white shadow-lg">
+            <h3 className="text-xl font-semibold mb-4 border-b border-gray-400 pb-2 text-center text-gray-800">{restaurantName || 'ร้านอาหาร'}</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-gray-700">โต๊ะที่เลือก:</span>
+                <span className="text-yellow-600 font-semibold">{reservation.setable}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-gray-700">ชื่อผู้จอง:</span>
+                <span className="text-yellow-600 font-semibold">{reservation.username}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-gray-700">จำนวนคน:</span>
+                <span className="text-yellow-600 font-semibold">{reservation.people} คน</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-gray-700">เวลานัด:</span>
+                <span className="text-yellow-600 font-semibold">{reservation.time}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-gray-700">วันที่นัด:</span>
+                <span className="text-yellow-600 font-semibold">{reservation.date}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-gray-700">รายละเอียดเพิ่มเติม:</span>
+                <span className="text-yellow-600 font-semibold">{reservation.detail || '-'}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-gray-700">รหัสอ้างอิง:</span>
+                <span className="text-yellow-600 font-semibold">LYG{reservation.reservationId || '00001'}</span>
+              </div>
             </div>
+            
+            {/* ตารางแสดงข้อมูลสั่งอาหาร */}
+            {reservation.foodorder && reservation.foodorder.length > 0 && (
+              <div className="mt-6">
+                <h4 className="text-lg font-semibold mb-3 text-center text-gray-800">รายการอาหาร</h4>
+                <div className="overflow-x-auto">
+                  <table className="w-full border border-gray-300 text-sm rounded-lg overflow-hidden">
+                    <thead className="bg-gray-100">
+                      <tr>
+                        <th className="border border-gray-300 px-3 py-2 text-left">รายการอาหาร</th>
+                        <th className="border border-gray-300 px-3 py-2 text-center">จำนวน</th>
+                        <th className="border border-gray-300 px-3 py-2 text-center">ราคาต่อหน่วย</th>
+                        <th className="border border-gray-300 px-3 py-2 text-center">ราคา</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {reservation.foodorder.map((item, idx) => (
+                        <tr key={idx} className="hover:bg-gray-50">
+                          <td className="border border-gray-300 px-3 py-2">{item.name}</td>
+                          <td className="border border-gray-300 px-3 py-2 text-center">{item.quantity}</td>
+                          <td className="border border-gray-300 px-3 py-2 text-center">{item.price} บาท</td>
+                          <td className="border border-gray-300 px-3 py-2 text-center">{item.quantity * item.price} บาท</td>
+                        </tr>
+                      ))}
+                      <tr className="bg-yellow-50 font-semibold">
+                        <td className="border border-gray-300 px-3 py-2 text-center" colSpan="3">ราคารวม</td>
+                        <td className="border border-gray-300 px-3 py-2 text-center text-yellow-600">{totalPrice} บาท</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
-                          <button onClick={() => navigate("/user-menu")} className="w-full h-14 bg-yellow-400 hover:bg-yellow-500 text-white py-2 rounded-xl font-semibold">
+                          <button onClick={() => navigate("/user-menu")} className="w-full h-14 bg-yellow-400 hover:bg-yellow-500 text-white py-2 rounded-xl font-semibold transition-colors shadow-lg hover:shadow-xl">
             กลับหน้าหลัก
           </button>
         </div>

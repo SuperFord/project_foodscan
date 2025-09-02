@@ -114,6 +114,17 @@ function Reservation() {
       return;
     }
 
+    // ตรวจสอบว่ามีการเลือกโต๊ะหรือไม่
+    if (selectedTables.length === 0) {
+      Swal.fire({
+        title: 'แจ้งเตือน',
+        text: 'กรุณาเลือกโต๊ะก่อนทำการจอง',
+        icon: 'warning',
+        confirmButtonText: 'ตกลง'
+      });
+      return;
+    }
+
     const reservationData = {
       username: fullName,  // ใช้ชื่อ-สกุลที่ดึงมาจากฐานข้อมูล
       Email: email,  // ใช้ชื่อ-สกุลที่ดึงมาจากฐานข้อมูล
@@ -126,6 +137,8 @@ function Reservation() {
       foodorder: cart, // รายละเอียดเพิ่มเติม
       tables: selectedTables.map(table => table.label), // สมมติว่าใช้ ID ของโต๊ะเพื่ออัปเดตสถานะ
       status: 2,  // เปลี่ยนสถานะเป็น 2 (โต๊ะถูกจองแล้ว)
+      reservationId: Date.now(), // เพิ่ม ID สำหรับการจอง
+      createdAt: new Date().toISOString(), // เพิ่มเวลาที่สร้างการจอง
     };
 
     try {
@@ -148,10 +161,12 @@ function Reservation() {
           timer: 1200,
           showConfirmButton: false
         }).then(() => {
+          // นำทางไปยัง ReserDetail พร้อมข้อมูลการจอง
           navigate("/user-reser-detail", {
             state: {
               reservation: reservationData
-            }
+            },
+            replace: true // ใช้ replace เพื่อป้องกันการกด back กลับไปหน้า Reservation
           });
         });
       } else {
@@ -164,6 +179,12 @@ function Reservation() {
       }
     } catch (error) {
       console.error("Error making reservation:", error);
+      Swal.fire({
+        title: 'เกิดข้อผิดพลาด',
+        text: 'เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์',
+        icon: 'error',
+        confirmButtonText: 'ตกลง'
+      });
     }
   };
 
