@@ -23,8 +23,6 @@ function ReserFood() {
   const [quantity, setQuantity] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [ userId, setUserId] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
 
   // ตรวจสอบหน้าที่มาจากไหน
   const fromPage = location.state?.fromPage || ""; // รับค่าหน้าก่อนหน้า ถ้ามี
@@ -106,8 +104,6 @@ function ReserFood() {
         }
       } catch (error) {
         console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchData();
@@ -181,10 +177,9 @@ function ReserFood() {
   const increaseQuantity = () => setQuantity(prev => prev + 1);
   const decreaseQuantity = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
-  const filteredMenus = (selectedCategory === 'รายการอาหารทั้งหมด'
+  const filteredMenus = selectedCategory === 'รายการอาหารทั้งหมด'
     ? menus
-    : menus.filter(menu => menu.category === selectedCategory))
-    .filter(menu => menu.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    : menus.filter(menu => menu.category === selectedCategory);
 
   return (
     <div className="w-full bg-white font-sans px-2 pt-10 pb-12 flex justify-center items-center">
@@ -214,18 +209,9 @@ function ReserFood() {
           <h1 className="text-4xl font-bold">{restaurantData.name}</h1>
         </div>
 
-        {/* ค้นหา + หมวดหมู่อาหาร */}
+        {/* หมวดหมู่อาหาร */}
         <div className="pt-4">
           <div className="p-4 flex flex-wrap gap-6 items-center">
-            <div className="flex-1 min-w-[200px]">
-              <input
-                type="text"
-                placeholder="ค้นหาอาหาร..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-              />
-            </div>
             {categories.slice(0, 2).map((category, index) => (
               <button
                 key={index}
@@ -270,12 +256,7 @@ function ReserFood() {
 
         {/* รายการอาหารตาม category ที่เลือก */}
         <div className="pt-2">
-          {loading ? (
-            <div className="flex items-center justify-center py-10 text-yellow-600">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-600 mr-3"></div>
-              กำลังโหลดเมนู...
-            </div>
-          ) : filteredMenus.length > 0 ? (
+          {filteredMenus.length > 0 ? (
             <div className="space-y-4">
               {filteredMenus.map((menu, index) => (
                 <div key={index} className="flex items-start space-x-4 pb-4">
@@ -303,9 +284,7 @@ function ReserFood() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-10 text-gray-500 bg-gray-50 rounded-lg border">
-              ไม่มีเมนูในหมวดหมู่นี้
-            </div>
+            <p className="text-gray-500">ไม่มีเมนูในหมวดหมู่นี้</p>
           )}
         </div>
 

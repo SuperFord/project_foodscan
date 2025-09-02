@@ -288,16 +288,13 @@ function Register() {
 
   //Form สมัครสมาชิก
   return (
-    <div className="w-full h-screen bg-white flex flex-col">
-      {/* Header (shared) */}
-      <div className="w-full flex items-center justify-center p-8 text-white gap-10 bg-gradient-to-r from-yellow-400 to-yellow-500 shadow">
-        <Link to="/user" className="w-40 text-center text-xl font-bold text-white/80 hover:text-white">ล็อคอิน</Link>
-        <div className="w-40 text-center text-xl font-bold text-white border-b-2 border-white/80">สมัครสมาชิก</div>
+    <div className="w-full h-screen flex flex-col items-center">
+      <div className="full flex items-center justify-center p-14 text-white gap-10">
+        <Link to="/User/" className="w-40 text-center text-xl font-bold text-gray-400 hover:text-yellow-500">ล็อคอิน</Link>
+        <div className="w-40 text-center text-xl font-bold text-yellow-500 border-b-2 border-yellow-500">สมัครสมาชิก</div>
       </div>
 
-      {/* Centered container */}
-      <div className="flex-1 flex items-center justify-center px-4">
-        <div className="w-full max-w-md px-10">
+      <div className="w-full max-w-md mt-6 px-10 rounded">
         <div className="mb-4">
           <label htmlFor="username" className="block text-1xl font-bold text-black">ชื่อ - สกุล</label>
           <input type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full p-4 mt-1 border rounded-lg border-gray-300" placeholder="กรุณากรอกชื่อผู้ใช้" />
@@ -328,14 +325,13 @@ function Register() {
           <div className="text-red-500 text-2sm">รหัสผ่านไม่ตรงกัน</div>
         )}
         {error && <div className="text-red-500 text-xs">{error}</div>}
-        <button className="w-full my-6 p-4 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg" onClick={handleRegister}>สมัครสมาชิก</button>
-        <label className="block text-1xl text-center text-zinc-600">
+        <button className="w-full my-6 p-4 bg-yellow-400 text-white font-bold rounded-lg" onClick={handleRegister}>สมัครสมาชิก</button>
+        <label className="block text-1xl text-center text-zinc-600 ">
           มีบัญชีอยู่เเล้ว?{' '}
-          <Link to="/user" className="text-blue-500 hover:text-blue-700">
+          <Link to="/User/" className="text-blue-500 hover:text-blue-700">
             ล็อคอิน
           </Link>
         </label>
-        </div>
       </div>
     </div>
   );

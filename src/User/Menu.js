@@ -2,13 +2,12 @@ import { useNavigate , Link } from "react-router-dom";
 import { FiHome, FiUser } from "react-icons/fi"; // ไอคอนแบบเดียวกับในภาพ figma
 import tableImg from "./img/table.png";
 import historyImg from "./img/history.png";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { fetchWithAuth } from './Menu/fetchWithAuth';
 import Swal from 'sweetalert2';
 
 function Menu() {
   const navigate = useNavigate();
-  const [hasActiveReservation, setHasActiveReservation] = useState(false);
   
   // เช็ค token ถ้าไม่มี token จะเปลี่ยนเส้นทางไปหน้า /User
   useEffect(() => {
@@ -21,20 +20,6 @@ function Menu() {
 
       if (!response.ok) {
         console.error("Token invalid or other error");
-        return;
-      }
-
-      // ตรวจสอบว่าผู้ใช้มีการจองโต๊ะที่ยังไม่เสร็จสิ้นหรือไม่
-      try {
-        const reservationResponse = await fetchWithAuth('/api/user/active-reservations');
-        if (reservationResponse && reservationResponse.ok) {
-          const reservationData = await reservationResponse.json();
-          if (reservationData.success && reservationData.reservations && reservationData.reservations.length > 0) {
-            setHasActiveReservation(true);
-          }
-        }
-      } catch (error) {
-        console.error("Error checking active reservations:", error);
       }
     };
 
@@ -49,17 +34,6 @@ function Menu() {
   // ตรวจสอบเวลาถ้าถึงตามที่กำหนดจะกดไปจองโต๊ะไม่ได้
   const handleMenuClick = (item) => {
     if (item.name === "จองโต๊ะ") {
-      // ตรวจสอบว่ามีการจองโต๊ะที่ยังไม่เสร็จสิ้นหรือไม่
-      if (hasActiveReservation) {
-        Swal.fire({
-          icon: "warning",
-          title: "ไม่สามารถจองโต๊ะได้",
-          text: "คุณมีการจองโต๊ะที่ยังไม่เสร็จสิ้น กรุณาตรวจสอบการจองปัจจุบันก่อน",
-          confirmButtonText: "ตกลง"
-        });
-        return;
-      }
-
       const now = new Date();
       const hour = now.getHours();
       const minute = now.getMinutes();
@@ -75,7 +49,7 @@ function Menu() {
       // }
     }
   
-    navigate(item.path);
+        navigate(item.path);
   };
 
   return (
