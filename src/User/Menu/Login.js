@@ -79,10 +79,10 @@ function Login() {
   }, [navigate]);  
 
   return (
-    <div className="w-full h-screen bg-white flex flex-col items-center">
-      {/* Header */}
-      <div className="w-full flex items-center justify_center p-10 text-white gap-10 bg-gradient-to-r from-yellow-400 to-yellow-500 shadow">
-        <Link to="/user" className="w-40 text-center text-xl font-bold text-white border-b-2 border-white/70">
+    <div className="w-full h-screen bg-white flex flex-col">
+      {/* Header (shared) */}
+      <div className="w-full flex items-center justify-center p-8 text-white gap-10 bg-gradient-to-r from-yellow-400 to-yellow-500 shadow">
+        <Link to="/user" className="w-40 text-center text-xl font-bold text-white border-b-2 border-white/80">
           ล็อคอิน
         </Link>
         <Link to="/user-register" className="w-40 text-center text-xl font-bold text-white/80 hover:text-white">
@@ -90,8 +90,9 @@ function Login() {
         </Link>
       </div>
 
-      {/* Form */}
-      <div className="w-full max-w-md mt-8 p-6 bg-white rounded-xl shadow border border-gray-100">
+      {/* Centered container */}
+      <div className="flex-1 flex items-center justify-center px-4">
+        <div className="w-full max-w-md p-6 bg-white rounded-xl shadow border border-gray-100">
         {tokenExpired && (
           <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 text-yellow-800 rounded">
             เซสชันหมดอายุ กรุณาล็อกอินใหม่
@@ -157,6 +158,7 @@ function Login() {
             สมัครสมาชิก
           </Link>
         </label>
+        </div>
       </div>
     </div>
   );
