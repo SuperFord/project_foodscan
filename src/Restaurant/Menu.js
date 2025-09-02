@@ -13,6 +13,10 @@ function Menu() {
   const navigate = useNavigate();
   const [hasTableLayout, setHasTableLayout] = useState(false);
   const [adminInfo, setAdminInfo] = useState(null);
+  
+  const handleAdminManagement = () => {
+    window.alert("ฟีเจอร์จัดการข้อมูลจะพร้อมใช้งานเร็วๆ นี้");
+  };
 
   useEffect(() => {
     checkTableLayout();
@@ -66,12 +70,20 @@ function Menu() {
             </div>
           )}
         </div>
-        <button
-          onClick={handleLogout}
-          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-        >
-          ออกจากระบบ
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={handleAdminManagement}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            จัดการข้อมูล
+          </button>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+          >
+            ออกจากระบบ
+          </button>
+        </div>
       </div>
 
       <div className="text-3xl font-bold text-center mb-4 mt-6 relative">
