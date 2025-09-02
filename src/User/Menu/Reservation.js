@@ -105,7 +105,12 @@ function Reservation() {
 
   const handleReservation = async () => {
     if (!time) {
-      alert("กรุณาเลือกเวลาในการจอง");
+      Swal.fire({
+        title: 'แจ้งเตือน',
+        text: 'กรุณาเลือกเวลาในการจอง',
+        icon: 'warning',
+        confirmButtonText: 'ตกลง'
+      });
       return;
     }
 
@@ -136,14 +141,26 @@ function Reservation() {
 
       const result = await response.json();
       if (result.success) {
-        alert("จองโต๊ะสำเร็จ");
-        navigate("/user-reser-detail", {
-          state: {
-            reservation: reservationData
-          }
-        }); // กลับไปยังหน้า Menu
+        Swal.fire({
+          title: 'สำเร็จ!',
+          text: 'จองโต๊ะสำเร็จ',
+          icon: 'success',
+          timer: 1200,
+          showConfirmButton: false
+        }).then(() => {
+          navigate("/user-reser-detail", {
+            state: {
+              reservation: reservationData
+            }
+          });
+        });
       } else {
-        alert("เกิดข้อผิดพลาดในการจองโต๊ะ");
+        Swal.fire({
+          title: 'เกิดข้อผิดพลาด',
+          text: 'เกิดข้อผิดพลาดในการจองโต๊ะ',
+          icon: 'error',
+          confirmButtonText: 'ตกลง'
+        });
       }
     } catch (error) {
       console.error("Error making reservation:", error);
