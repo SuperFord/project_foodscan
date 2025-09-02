@@ -7,7 +7,6 @@ import Switch from "react-switch";
 export default function ListFood() {
   const navigate = useNavigate();
   const [menus, setMenus] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [categories, setCategories] = useState([]); // ดึงจาก API ก็ได้
   const [selectedCategory, setSelectedCategory] = useState("รายการอาหารทั้งหมด");
@@ -15,7 +14,6 @@ export default function ListFood() {
   const [itemsPerPage] = useState(8); // เปลี่ยนจาก 10 เป็น 8
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchInput, setSearchInput] = useState("");
   
   useEffect(() => {
     fetchMenus();
@@ -24,23 +22,13 @@ export default function ListFood() {
 
   const fetchMenus = async () => {
     try {
-      setLoading(true);
       const response = await fetch(buildUrl("/api/menus"));
       if (response.ok) {
         const data = await response.json();
-        if (Array.isArray(data?.menus)) {
-          setMenus(data.menus);
-        } else if (Array.isArray(data)) {
-          setMenus(data);
-        } else {
-          setMenus([]);
-        }
+        setMenus(data.menus);
       }
     } catch (error) {
       // Error handling without console.log
-    }
-    finally {
-      setLoading(false);
     }
   };
 
@@ -138,9 +126,6 @@ export default function ListFood() {
       if (showAllCategories && !event.target.closest('.category-dropdown')) {
         setShowAllCategories(false);
       }
-      if (openDropdown && !event.target.closest('.menu-gear-dropdown')) {
-        setOpenDropdown(null);
-      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -148,15 +133,6 @@ export default function ListFood() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showAllCategories]);
-
-  // หน่วงการค้นหาเพื่อประสิทธิภาพ
-  useEffect(() => {
-    const id = setTimeout(() => {
-      setSearchTerm(searchInput);
-      setCurrentPage(1);
-    }, 300);
-    return () => clearTimeout(id);
-  }, [searchInput]);
 
   const filteredMenus =
   selectedCategory === "รายการอาหารทั้งหมด"
@@ -193,11 +169,8 @@ export default function ListFood() {
 
       {/* Food List */}
       <div className="p-4">
-        {/* สรุปผลลัพธ์ */}
-        <div className="mb-3 text-sm text-gray-600">
-          แสดงผล {displayedMenus.length} รายการ จากทั้งหมด {sortedMenus.length} รายการในหมวด "{selectedCategory}"
-        </div>
-
+        
+        
         {/* Search and Category Button */}
         <div className="flex items-center space-x-3 mb-4">
           {/* Search Input */}
@@ -206,8 +179,8 @@ export default function ListFood() {
               type="text"
               placeholder="ค้นหาอาหาร..."
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
               <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -265,7 +238,7 @@ export default function ListFood() {
           {displayedMenus.map((menu) => (
             <div key={menu.id} className="border-b pb-4 relative bg-gray-100 p-4 rounded-lg">
               {/* ไอคอนฟันเฟือง (ตั้งค่าด้านบนขวา) */}
-              <div className="absolute top-2 right-2 menu-gear-dropdown">
+              <div className="absolute top-2 right-2">
                 <FaCog
                   className="text-xl text-gray-600 cursor-pointer"
                   onClick={() => setOpenDropdown(openDropdown === menu.id ? null : menu.id)}
@@ -321,19 +294,7 @@ export default function ListFood() {
               </div>
             </div>
           ))}
-          {!loading && displayedMenus.length === 0 && (
-            <div className="text-center py-10 text-gray-500 bg-gray-50 rounded-lg border">
-              ไม่มีรายการอาหารที่ตรงกับเงื่อนไขการค้นหา
-            </div>
-          )}
         </div>
-
-        {loading && (
-          <div className="flex items-center justify-center py-10 text-yellow-600">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-600 mr-3"></div>
-            กำลังโหลดรายการอาหาร...
-          </div>
-        )}
         
         {/* เลขหน้า */}
         {totalPages > 1 && (
