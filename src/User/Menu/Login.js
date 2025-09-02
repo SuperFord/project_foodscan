@@ -90,8 +90,8 @@ function Login() {
         </Link>
       </div>
 
-      {/* Centered container */}
-      <div className="flex-1 flex items-center justify-center px-4">
+      {/* Form container - positioned higher */}
+      <div className="flex-1 flex items-start justify-center px-4 pt-16">
         <div className="w-full max-w-md p-6 bg-white rounded-xl shadow border border-gray-100">
         {tokenExpired && (
           <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 text-yellow-800 rounded">
