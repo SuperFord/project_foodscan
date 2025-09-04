@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { QRCodeCanvas } from "qrcode.react"
 import generatePayload from "promptpay-qr"
 import { CheckCircle, AlertTriangle, Loader2, Upload, X, Clock, CreditCard, Smartphone } from "lucide-react"
+import { buildUrl } from '../../utils/api';
 
 function PaymentQR() {
   const [qrEnabled, setQrEnabled] = useState(true)
@@ -424,14 +425,9 @@ function PaymentQR() {
         <div className="space-y-3">
           <button
             onClick={navigateBack}
-            disabled={!uploadedSlip}
-            className={`w-full px-6 py-3 rounded-lg font-semibold transition-colors ${
-              uploadedSlip 
-                ? "bg-yellow-400 hover:bg-yellow-500 text-white" 
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
+            className="w-full px-6 py-3 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg font-semibold transition-colors"
           >
-            {uploadedSlip ? "ยืนยันการจอง" : "กรุณาอัปโหลดสลิปก่อน"}
+            ยืนยันการจอง
           </button>
 
           <button
