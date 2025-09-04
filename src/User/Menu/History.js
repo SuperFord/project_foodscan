@@ -1,11 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from "react-router-dom";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaFilter, FaCalendarAlt, FaClock } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { FiHome, FiUser } from "react-icons/fi";
 import { fetchWithAuth } from './fetchWithAuth';
-import { buildUrl } from '../../utils/api';
 
 // Custom Thai Date Picker Component
 const ThaiDatePicker = ({ value, onChange, label, placeholder }) => {
@@ -185,6 +184,7 @@ function History() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   
+  // Filter states
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const token = localStorage.getItem('token');
@@ -204,6 +204,7 @@ function History() {
     // ดึงประวัติการจองและเรียงจากใหม่ไปเก่า
     const fetchHistory = async () => {
       try {
+        setLoading(true);
         const res = await fetch(buildUrl('/api/user/history'), {
           method: "GET",
           headers: {
@@ -228,6 +229,8 @@ function History() {
         setError('ไม่สามารถโหลดข้อมูลได้');
         setReservations([]);
         setFilteredReservations([]);
+      } finally {
+        setLoading(false);
       }
     };
 
