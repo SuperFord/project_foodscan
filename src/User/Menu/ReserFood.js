@@ -12,32 +12,28 @@ function ReserFood() {
   const tableNames = selectedTables.map(t => t.label).join(', ');
   const [menus, setMenus] = useState([]);
   const [restaurantData, setRestaurantData] = useState({ name: '', description: '' });
-  const [cart, setCart] = useState(location.state?.cart || []);//มีเซ็คว่ามีค่าเดิมไหม
+  const [cart, setCart] = useState([]);
   const [hasLoadedCart, setHasLoadedCart] = useState(false);
   const cartKey = `cart_${fullName}_${selectedTables.map(t => t.label).join('_')}`;
-  const [showCart, setShowCart] = useState(false); // toggle แสดงตะกร้า
-  const [categories, setCategories] = useState([]); // เพิ่ม state เก็บหมวดหมู่
-  const [selectedCategory, setSelectedCategory] = useState(''); // หมวดหมู่ที่ถูกเลือก
-  const [showAllCategories, setShowAllCategories] = useState(false); // สำหรับ toggle popup
+  const [showCart, setShowCart] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [showAllCategories, setShowAllCategories] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [ userId, setUserId] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(''); // เพิ่ม state สำหรับ search
-
-  // ตรวจสอบหน้าที่มาจากไหน
-  const fromPage = location.state?.fromPage || ""; // รับค่าหน้าก่อนหน้า ถ้ามี
+  const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const checkAuthAndData = async () => {
       const response = await fetchWithAuth('/api/checkToken', {}, navigate);
   
       if (!response || !response.ok) {
-        // fetchWithAuth จะ redirect ไป /User ให้อยู่แล้วหาก token หมดอายุ
         return;
       }
   
-      // ✅ ตรวจสอบ token ผ่านแล้ว ค่อยตรวจสอบข้อมูลการจอง
       if (!tableNames || !fullName) {
         Swal.fire({
           icon: 'warning',
@@ -52,34 +48,24 @@ function ReserFood() {
       }
     };
   
-    checkAuthAndData(); // เรียก function ที่ควบคุมลำดับเอง
+    checkAuthAndData();
   }, [tableNames, fullName, navigate]);
 
-  // โหลด cart จาก localStorage ครั้งเดียวเมื่อ cartKey พร้อม
+  // โหลด cart จาก localStorage
   useEffect(() => {
     if (!cartKey || hasLoadedCart) return;
 
     const storedCart = JSON.parse(localStorage.getItem(cartKey)) || [];
     console.log("ข้อมูลเดิมจาก localStorage:", storedCart);
-
-    if (fromPage === "ReserEdit") {
-      const editCart = location.state?.cart;
-      if (editCart) {
-        setCart(editCart);
-      } else {
-        setCart(storedCart);
-      }
-    } else {
-      setCart(storedCart);
-    }
-
+    setCart(storedCart);
     setHasLoadedCart(true);
-  }, [cartKey, fromPage, location.state, hasLoadedCart]);
+  }, [cartKey, hasLoadedCart]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = localStorage.getItem('token');  // ดึง JWT token จาก localStorage
+      const token = localStorage.getItem('token');
       try {
+        setLoading(true);
         // ดึงข้อมูลร้าน
         const restaurantResponse = await fetch(buildUrl('/api/Nrestaurant'), {
           headers: {
@@ -117,7 +103,7 @@ function ReserFood() {
     localStorage.setItem(cartKey, JSON.stringify(cart));
   }, [cart, cartKey, hasLoadedCart]);
 
-  // มีข้อมูลเดิมในตะกร้าไม่ต้องเพิ่มไปซ้ำให้ปรับจำนวนเอา
+  // อัพเดตตะกร้าหลังจากแก้ไขจำนวนหรือเมนู
   useEffect(() => {
     const updatedCart = cart.map(item => {
       if (selectedMenu && selectedMenu.id === item.id) {
@@ -126,34 +112,29 @@ function ReserFood() {
       return item;
     });
     setCart(updatedCart);
-  }, [selectedMenu, quantity]); // อัพเดตตะกร้าหลังจากแก้ไขจำนวนหรือเมนู  
+  }, [selectedMenu, quantity]);
 
   // Add item to cart
   const openAddToCartModal = (menu) => {
     const existingItem = cart.find(item => item.id === menu.id);
 
-    setSelectedMenu(existingItem ? { ...existingItem } : menu); // ถ้ามีรายการอยู่ในตะกร้าแล้วให้ใช้ข้อมูลเดิม
-    setQuantity(existingItem ? existingItem.quantity : 1); // ใช้จำนวนเดิมหรือเริ่มต้นที่ 1
+    setSelectedMenu(existingItem ? { ...existingItem } : menu);
+    setQuantity(existingItem ? existingItem.quantity : 1);
     setShowModal(true);
   };
 
   const confirmAddToCart = () => {
     const updatedItem = { ...selectedMenu, quantity };
-    // ตรวจสอบว่ามีเมนูนี้ในตะกร้าแล้วหรือยัง
     const existingItemIndex = cart.findIndex(item => item.id === selectedMenu.id);
     if (existingItemIndex !== -1) {
-      // ถ้ามีรายการนี้แล้ว, อัพเดตจำนวน
       const updatedCart = [...cart];
       updatedCart[existingItemIndex].quantity = quantity;
-      // console.log("อัปเดตรายการในตะกร้า:", updatedCart);
       setCart(updatedCart);
     } else {
-      // ถ้าไม่มีรายการนี้ในตะกร้า, ให้เพิ่มรายการใหม่
       const newCart = [...cart, updatedItem];
-      // console.log("🛒 เพิ่มรายการใหม่ในตะกร้า:", updatedItem);
       setCart(newCart);
     }
-    setShowModal(false); // ปิด modal หลังจากเพิ่ม
+    setShowModal(false);
   };
 
   // ฟังก์ชันจัดการของในตะกร้า
@@ -274,7 +255,12 @@ function ReserFood() {
 
         {/* รายการอาหารตาม category ที่เลือก */}
         <div className="pt-2">
-           {filteredMenus.length > 0 ? (
+           {loading ? (
+             <div className="text-center py-12">
+               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 mx-auto mb-4"></div>
+               <p className="text-gray-600">กำลังโหลดเมนู...</p>
+             </div>
+           ) : filteredMenus.length > 0 ? (
              <div className="space-y-6">
                {filteredMenus.map((menu, index) => (
                  <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-shadow">
@@ -409,7 +395,7 @@ function ReserFood() {
               <button
                 onClick={() => {
                   const totalAmount = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-                  const tableNames = selectedTables.map(t => t.label).join(', '); // เอาไว้โชว์ในหน้า QR
+                  const tableNames = selectedTables.map(t => t.label).join(', ');
 
                   navigate('/payment', {
                     state: {
@@ -423,7 +409,6 @@ function ReserFood() {
                       time: location.state?.time,
                       additionalDetails: location.state?.additionalDetails,
                       joinTables: location.state?.joinTables,
-                      fromPage,
                     }
                   });
                 }}
