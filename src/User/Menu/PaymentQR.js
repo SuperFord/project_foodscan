@@ -15,7 +15,7 @@ function PaymentQR() {
   const [uploadedSlip, setUploadedSlip] = useState(null)
   const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState("")
-  const [showUploadSection, setShowUploadSection] = useState(false)
+  const [showUploadSection, setShowUploadSection] = useState(true)
 
   const navigate = useNavigate()
   const location = useLocation()
