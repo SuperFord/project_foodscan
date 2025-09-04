@@ -15,7 +15,6 @@ function PaymentQR() {
   const [uploadedSlip, setUploadedSlip] = useState(null)
   const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState("")
-  const [showUploadSection, setShowUploadSection] = useState(false)
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -325,53 +324,49 @@ function PaymentQR() {
 
         {/* Payment Slip Upload Section (optional) */}
         <div className="mb-6">
-          {!uploadedSlip ? (
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
-              <div className="text-center mb-4">
-                <h3 className="font-semibold text-gray-800 mb-2 flex items-center justify-center">
-                  <Upload className="w-5 h-5 mr-2 text-red-500" />
-                  กรุณาอัปโหลดสลิปการโอนเงิน
-                </h3>
-                <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
-                  ⚠️ การอัปโหลดสลิปเป็นสิ่งจำเป็นเพื่อยืนยันการจอง
-                </p>
-              </div>
+           {!uploadedSlip ? (
+             <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+               <div className="text-center mb-4">
+                 <h3 className="font-semibold text-gray-800 mb-2 flex items-center justify-center">
+                   <Upload className="w-5 h-5 mr-2 text-blue-500" />
+                   กรุณาอัปโหลดสลิปการโอนเงิน
+                 </h3>
+                 <p className="text-sm text-gray-600 bg-yellow-50 border border-yellow-200 rounded-lg px-3 py-2">
+                   ⚠️ หากไม่อัปโหลดสลิปจะไม่สามารถกดยืนยันได้
+                 </p>
+               </div>
 
-              {!showUploadSection ? (
-                <button
-                  onClick={() => setShowUploadSection(true)}
-                  className="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
-                >
-                  <Upload className="w-4 h-4" />
-                  <span>เลือกไฟล์สลิป</span>
-                </button>
-              ) : (
-                <div className="space-y-3">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleSlipUpload}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                    disabled={uploading}
-                  />
+               <div className="space-y-3">
+                 <input
+                   type="file"
+                   accept="image/*"
+                   onChange={handleSlipUpload}
+                   className="hidden"
+                   id="payment-slip-input"
+                   disabled={uploading}
+                 />
+                 
+                 <label
+                   htmlFor="payment-slip-input"
+                   className={`w-full px-4 py-3 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 cursor-pointer ${
+                     uploading 
+                       ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
+                       : "bg-blue-500 hover:bg-blue-600 text-white"
+                   }`}
+                 >
+                   <Upload className="w-4 h-4" />
+                   <span>{uploading ? "กำลังอัปโหลด..." : "เลือกไฟล์สลิป"}</span>
+                 </label>
 
-                  {uploadError && <div className="text-red-600 text-sm bg-red-50 p-2 rounded">{uploadError}</div>}
+                 {uploadError && <div className="text-red-600 text-sm bg-red-50 p-2 rounded">{uploadError}</div>}
 
-                  {uploading && (
-                    <div className="flex items-center justify-center space-x-2 text-blue-600">
-                      <Loader2 className="animate-spin w-4 h-4" />
-                      <span className="text-sm">กำลังอัปโหลดไปยังโฟลเดอร์ Payment slip...</span>
-                    </div>
-                  )}
-
-                  <button
-                    onClick={() => setShowUploadSection(false)}
-                    className="w-full px-3 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg text-sm transition-colors"
-                  >
-                    ยกเลิก
-                  </button>
-                </div>
-              )}
+                 {uploading && (
+                   <div className="flex items-center justify-center space-x-2 text-blue-600">
+                     <Loader2 className="animate-spin w-4 h-4" />
+                     <span className="text-sm">กำลังอัปโหลดไปยังโฟลเดอร์ Payment slip...</span>
+                   </div>
+                 )}
+               </div>
 
               <p className="text-xs text-gray-500 mt-2">
                 รองรับไฟล์: JPG, PNG, GIF (ขนาดไม่เกิน 5MB)
@@ -415,16 +410,9 @@ function PaymentQR() {
             <p>1. เปิดแอปธนาคารของคุณ</p>
             <p>2. สแกน QR Code ด้านบน</p>
             <p>3. ตรวจสอบยอดเงินและชำระ</p>
-            <p>4. <strong className="text-red-600">อัปโหลดสลิปการโอนเงิน (จำเป็น)</strong></p>
-            <p>5. กลับมายืนยันการจอง</p>
+            <p>4. อัปโหลดสลิปการโอนเงิน</p>
+            <p>5. กดยืนยันการจอง</p>
           </div>
-          {!uploadedSlip && (
-            <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-700 text-sm font-medium">
-                ⚠️ คุณต้องอัปโหลดสลิปการโอนเงินก่อนจึงจะสามารถยืนยันการจองได้
-              </p>
-            </div>
-          )}
         </div>
 
         {/* Action Buttons */}
@@ -438,7 +426,7 @@ function PaymentQR() {
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
           >
-            {uploadedSlip ? "กลับไปยืนยันการจอง" : "กรุณาอัปโหลดสลิปก่อน"}
+            {uploadedSlip ? "ยืนยัน" : "กรุณาอัปโหลดสลิปก่อน"}
           </button>
 
           <button
