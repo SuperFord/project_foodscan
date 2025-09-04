@@ -5,6 +5,7 @@ import { FaArrowLeft, FaFilter, FaCalendarAlt, FaClock } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { FiHome, FiUser } from "react-icons/fi";
 import { fetchWithAuth } from './fetchWithAuth';
+import { buildUrl } from '../../utils/api';
 
 // Custom Thai Date Picker Component
 const ThaiDatePicker = ({ value, onChange, label, placeholder }) => {
