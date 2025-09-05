@@ -3,7 +3,6 @@ import Main from "./Main.js"
 // User
 import ULogin from "./User/Menu/Login.js";
 import Register from "./User/Menu/Register.js";
-import ForgetPassword from "./User/Menu/ForgetPassword.js";
 import UMenu from "./User/Menu.js";
 import Profile from "./User/Menu/Profile.js";
 import Setting from "./User/Menu/Setting.js";
@@ -49,7 +48,6 @@ function App() {
         <Route path="/user" element={<ULogin />} />
         <Route path="/user-login" element={<ULogin />} />
         <Route path="/user-register" element={<Register />} />
-        <Route path="/user-forget-password" element={<ForgetPassword />} />
         <Route path="/user-menu" element={<UMenu />} />
         <Route path="/user-profile" element={<Profile />} />
         <Route path="/user-setting" element={<Setting />} />          
