@@ -25,7 +25,7 @@ function Menu() {
   const [adminEmail, setAdminEmail] = useState('');
   const [showEmailSettings, setShowEmailSettings] = useState(false);
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
-  const [changePasswordData, setChangePasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [changePasswordData, setChangePasswordData] = useState({ newPassword: '', confirmPassword: '' });
   const [changePasswordError, setChangePasswordError] = useState('');
   const [isChangingPassword, setIsChangingPassword] = useState(false);
 
@@ -210,10 +210,16 @@ function Menu() {
     }
   };
 
+  const handleOpenChangePasswordModal = () => {
+    setShowChangePasswordModal(true);
+    setChangePasswordData({ newPassword: '', confirmPassword: '' });
+    setChangePasswordError('');
+  };
+
   const handleChangePassword = async () => {
-    const { currentPassword, newPassword, confirmPassword } = changePasswordData;
+    const { newPassword, confirmPassword } = changePasswordData;
     
-    if (!currentPassword || !newPassword || !confirmPassword) {
+    if (!newPassword || !confirmPassword) {
       setChangePasswordError('กรุณากรอกข้อมูลให้ครบทุกช่อง');
       return;
     }
@@ -245,7 +251,7 @@ function Menu() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ currentPassword, newPassword })
+        body: JSON.stringify({ newPassword })
       });
 
       const data = await res.json();
@@ -259,7 +265,7 @@ function Menu() {
           showConfirmButton: false 
         });
         setShowChangePasswordModal(false);
-        setChangePasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        setChangePasswordData({ newPassword: '', confirmPassword: '' });
         setChangePasswordError('');
       } else {
         setChangePasswordError(data.message || 'เกิดข้อผิดพลาดในการเปลี่ยนรหัสผ่าน');
@@ -293,12 +299,6 @@ function Menu() {
           )}
         </div>
         <div className="flex gap-3">
-          <button
-            onClick={() => setShowChangePasswordModal(true)}
-            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-          >
-            เปลี่ยนรหัสผ่าน
-          </button>
           <button
             onClick={handleAdminManagement}
             className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
@@ -377,7 +377,11 @@ function Menu() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{admin.created_at ? new Date(admin.created_at).toLocaleDateString('th-TH') : '-'}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           <div className="flex gap-2">
-                            <button onClick={() => handleDeleteAdmin(admin.id, admin.username)} className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-xs">ลบ</button>
+                            {admin.username === adminInfo?.username ? (
+                              <button onClick={handleOpenChangePasswordModal} className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors text-xs">เปลี่ยนรหัสผ่าน</button>
+                            ) : (
+                              <button onClick={() => handleDeleteAdmin(admin.id, admin.username)} className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-xs">ลบ</button>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -460,7 +464,7 @@ function Menu() {
               <button 
                 onClick={() => { 
                   setShowChangePasswordModal(false); 
-                  setChangePasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' }); 
+                  setChangePasswordData({ newPassword: '', confirmPassword: '' }); 
                   setChangePasswordError(''); 
                 }} 
                 className="text-gray-500 hover:text-gray-700 text-2xl"
@@ -476,17 +480,6 @@ function Menu() {
             )}
             
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">รหัสผ่านปัจจุบัน</label>
-                <input 
-                  type="password" 
-                  value={changePasswordData.currentPassword} 
-                  onChange={(e) => setChangePasswordData({ ...changePasswordData, currentPassword: e.target.value })} 
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" 
-                  placeholder="กรอกรหัสผ่านปัจจุบัน" 
-                />
-              </div>
-              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">รหัสผ่านใหม่</label>
                 <input 
@@ -513,7 +506,7 @@ function Menu() {
                 <button 
                   onClick={() => { 
                     setShowChangePasswordModal(false); 
-                    setChangePasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' }); 
+                    setChangePasswordData({ newPassword: '', confirmPassword: '' }); 
                     setChangePasswordError(''); 
                   }} 
                   className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors" 
