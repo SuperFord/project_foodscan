@@ -414,8 +414,8 @@ function ReserFood() {
                         }
                       });
                     } else {
-                      // QR ปิดอยู่ - ไปยืนยันการจองเลย
-                      navigate('/reser-detail', {
+                      // QR ปิดอยู่ - ไปหน้า user-reservation ก่อน
+                      navigate('/user-reservation', {
                         state: {
                           totalAmount,
                           fullName,
