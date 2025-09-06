@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { buildUrl } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaUpload } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 function TableEditlayouts() {
   const navigate = useNavigate();
@@ -75,14 +76,32 @@ function TableEditlayouts() {
       });
       const data = await res.json();
       if (data.success) {
-        alert("บันทึกเวลาเปิด/ปิดการจองสำเร็จ");
-        navigate("/table-map");
+        Swal.fire({
+          title: 'บันทึกเวลาเปิด/ปิดการจองสำเร็จ!',
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false
+        }).then(() => {
+          navigate("/table-map");
+        });
       } else {
-        alert(data.message || "บันทึกเวลาไม่สำเร็จ");
+        Swal.fire({
+          title: 'เกิดข้อผิดพลาด!',
+          text: data.message || 'บันทึกเวลาไม่สำเร็จ',
+          icon: 'error',
+          confirmButtonText: 'ตกลง',
+          confirmButtonColor: '#f59e0b'
+        });
       }
     } catch (err) {
       console.error("Error saving reservation window:", err);
-      alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
+      Swal.fire({
+        title: 'เกิดข้อผิดพลาด!',
+        text: 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์',
+        icon: 'error',
+        confirmButtonText: 'ตกลง',
+        confirmButtonColor: '#f59e0b'
+      });
     }
   };
 
@@ -95,7 +114,13 @@ function TableEditlayouts() {
 
   const handleSubmit = () => {
     if (!tnumber && !tname) {
-      alert("กรุณากรอกข้อมูล");
+      Swal.fire({
+        title: 'กรุณากรอกข้อมูล!',
+        text: 'กรุณากรอกหมายเลขโต๊ะหรือชื่อโต๊ะ',
+        icon: 'warning',
+        confirmButtonText: 'ตกลง',
+        confirmButtonColor: '#f59e0b'
+      });
       return;
     }
   
@@ -199,14 +224,32 @@ function TableEditlayouts() {
             });
             const ok = await res.json();
             if (!ok.success) {
-              alert("บันทึกเวลาเปิด/ปิดการจองไม่สำเร็จ");
+              Swal.fire({
+                title: 'เกิดข้อผิดพลาด!',
+                text: 'บันทึกเวลาเปิด/ปิดการจองไม่สำเร็จ',
+                icon: 'error',
+                confirmButtonText: 'ตกลง',
+                confirmButtonColor: '#f59e0b'
+              });
             }
-            alert("บันทึกข้อมูลสำเร็จ!");
-            navigate("/table-map");
+            Swal.fire({
+              title: 'บันทึกข้อมูลสำเร็จ!',
+              icon: 'success',
+              timer: 1500,
+              showConfirmButton: false
+            }).then(() => {
+              navigate("/table-map");
+            });
           })
           .catch((error) => {
             console.error("Error:", error);
-            alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์!");
+            Swal.fire({
+              title: 'เกิดข้อผิดพลาด!',
+              text: 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์!',
+              icon: 'error',
+              confirmButtonText: 'ตกลง',
+              confirmButtonColor: '#f59e0b'
+            });
           });
       });
   };

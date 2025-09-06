@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { buildUrl } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaUpload } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 function TableLayouts() {
   const navigate = useNavigate();
@@ -18,15 +19,27 @@ function TableLayouts() {
 
   const handleSubmit = async () => {
     if (!tnumber && !tname) {
-      alert("กรุณากรอกข้อมูล");
+      Swal.fire({
+        title: 'กรุณากรอกข้อมูล!',
+        text: 'กรุณากรอกหมายเลขโต๊ะหรือชื่อโต๊ะ',
+        icon: 'warning',
+        confirmButtonText: 'ตกลง',
+        confirmButtonColor: '#f59e0b'
+      });
       return;
     }
 
     // ดึง token จาก localStorage
     const token = localStorage.getItem('restaurantToken');
     if (!token) {
-      alert('กรุณาเข้าสู่ระบบใหม่');
-      navigate('/restaurant-login');
+      Swal.fire({
+        title: 'กรุณาเข้าสู่ระบบใหม่',
+        icon: 'warning',
+        timer: 1500,
+        showConfirmButton: false
+      }).then(() => {
+        navigate('/restaurant-login');
+      });
       return;
     }
 
@@ -50,11 +63,23 @@ function TableLayouts() {
         if (imageResult.success) {
           imageURL = imageResult.imageURL; // เก็บ URL ของรูปภาพ
         } else {
-          alert("เกิดข้อผิดพลาดในการอัพโหลดรูปภาพ!");
+          Swal.fire({
+            title: 'เกิดข้อผิดพลาด!',
+            text: 'เกิดข้อผิดพลาดในการอัพโหลดรูปภาพ!',
+            icon: 'error',
+            confirmButtonText: 'ตกลง',
+            confirmButtonColor: '#f59e0b'
+          });
           return;
         }
       } catch (error) {
-        alert("เกิดข้อผิดพลาดในการอัพโหลดรูปภาพ!");
+        Swal.fire({
+          title: 'เกิดข้อผิดพลาด!',
+          text: 'เกิดข้อผิดพลาดในการอัพโหลดรูปภาพ!',
+          icon: 'error',
+          confirmButtonText: 'ตกลง',
+          confirmButtonColor: '#f59e0b'
+        });
         return;
       }
     }
@@ -83,19 +108,36 @@ function TableLayouts() {
   
       const layoutResult = await layoutResponse.json();
       if (layoutResult.success) {
-        alert("บันทึกข้อมูลสำเร็จ!");
-  
-        // 📌 ถ้ามีรูปภาพก็ส่งไปยัง table_map
-        if (imageURL) {
-          navigate("/table-map", { state: { imageURL } });
-        } else {
-          navigate("/table-map");
-        }
+        Swal.fire({
+          title: 'บันทึกข้อมูลสำเร็จ!',
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false
+        }).then(() => {
+          // 📌 ถ้ามีรูปภาพก็ส่งไปยัง table_map
+          if (imageURL) {
+            navigate("/table-map", { state: { imageURL } });
+          } else {
+            navigate("/table-map");
+          }
+        });
       } else {
-        alert("เกิดข้อผิดพลาดในการบันทึกข้อมูลแผงผังโต๊ะ!");
+        Swal.fire({
+          title: 'เกิดข้อผิดพลาด!',
+          text: 'เกิดข้อผิดพลาดในการบันทึกข้อมูลแผงผังโต๊ะ!',
+          icon: 'error',
+          confirmButtonText: 'ตกลง',
+          confirmButtonColor: '#f59e0b'
+        });
       }
     } catch (error) {
-      alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์!");
+      Swal.fire({
+        title: 'เกิดข้อผิดพลาด!',
+        text: 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์!',
+        icon: 'error',
+        confirmButtonText: 'ตกลง',
+        confirmButtonColor: '#f59e0b'
+      });
     }
   };
 
