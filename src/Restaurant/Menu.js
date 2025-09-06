@@ -24,6 +24,10 @@ function Menu() {
   const [errorMessage, setErrorMessage] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
   const [showEmailSettings, setShowEmailSettings] = useState(false);
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+  const [changePasswordData, setChangePasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [changePasswordError, setChangePasswordError] = useState('');
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   useEffect(() => {
     checkTableLayout();
@@ -206,6 +210,67 @@ function Menu() {
     }
   };
 
+  const handleChangePassword = async () => {
+    const { currentPassword, newPassword, confirmPassword } = changePasswordData;
+    
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setChangePasswordError('กรุณากรอกข้อมูลให้ครบทุกช่อง');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setChangePasswordError('รหัสผ่านใหม่และยืนยันรหัสผ่านไม่ตรงกัน');
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setChangePasswordError('รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร');
+      return;
+    }
+
+    setIsChangingPassword(true);
+    setChangePasswordError('');
+
+    try {
+      const token = localStorage.getItem('restaurantToken');
+      if (!token) {
+        alert('กรุณาเข้าสู่ระบบใหม่');
+        navigate('/restaurant-login');
+        return;
+      }
+
+      const res = await fetch(buildUrl('/api/restaurant/change-password'), {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ currentPassword, newPassword })
+      });
+
+      const data = await res.json();
+      
+      if (res.ok && data.success) {
+        Swal.fire({ 
+          title: 'สำเร็จ!', 
+          text: 'เปลี่ยนรหัสผ่านสำเร็จ', 
+          icon: 'success', 
+          timer: 1500, 
+          showConfirmButton: false 
+        });
+        setShowChangePasswordModal(false);
+        setChangePasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        setChangePasswordError('');
+      } else {
+        setChangePasswordError(data.message || 'เกิดข้อผิดพลาดในการเปลี่ยนรหัสผ่าน');
+      }
+    } catch (e) {
+      setChangePasswordError('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
+
   const menuItems = [
     { id: 1, name: "จัดการอาหาร", image: menuImg, path: "/listfood" },
     { id: 2, name: "จัดการแผนผังโต๊ะและเวลาเปิด - ปิด", image: tableImg, path: hasTableLayout ? "/table-map" : "/table-layouts" },
@@ -224,11 +289,16 @@ function Menu() {
           {adminInfo && (
             <div className="text-sm text-gray-600">
               <p>ยินดีต้อนรับ, <span className="font-semibold text-yellow-600">{adminInfo.username}</span></p>
-              <p>สถานะ: <span className="text-green-600">ผู้ดูแลระบบ</span></p>
             </div>
           )}
         </div>
         <div className="flex gap-3">
+          <button
+            onClick={() => setShowChangePasswordModal(true)}
+            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+          >
+            เปลี่ยนรหัสผ่าน
+          </button>
           <button
             onClick={handleAdminManagement}
             className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
@@ -377,6 +447,89 @@ function Menu() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Modal สำหรับเปลี่ยนรหัสผ่าน */}
+      {showChangePasswordModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold text-gray-800">เปลี่ยนรหัสผ่าน</h2>
+              <button 
+                onClick={() => { 
+                  setShowChangePasswordModal(false); 
+                  setChangePasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' }); 
+                  setChangePasswordError(''); 
+                }} 
+                className="text-gray-500 hover:text-gray-700 text-2xl"
+              >
+                <FaTimes />
+              </button>
+            </div>
+            
+            {changePasswordError && (
+              <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                {changePasswordError}
+              </div>
+            )}
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">รหัสผ่านปัจจุบัน</label>
+                <input 
+                  type="password" 
+                  value={changePasswordData.currentPassword} 
+                  onChange={(e) => setChangePasswordData({ ...changePasswordData, currentPassword: e.target.value })} 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" 
+                  placeholder="กรอกรหัสผ่านปัจจุบัน" 
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">รหัสผ่านใหม่</label>
+                <input 
+                  type="password" 
+                  value={changePasswordData.newPassword} 
+                  onChange={(e) => setChangePasswordData({ ...changePasswordData, newPassword: e.target.value })} 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" 
+                  placeholder="กรอกรหัสผ่านใหม่" 
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">ยืนยันรหัสผ่านใหม่</label>
+                <input 
+                  type="password" 
+                  value={changePasswordData.confirmPassword} 
+                  onChange={(e) => setChangePasswordData({ ...changePasswordData, confirmPassword: e.target.value })} 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" 
+                  placeholder="ยืนยันรหัสผ่านใหม่" 
+                />
+              </div>
+              
+              <div className="flex gap-3 pt-4">
+                <button 
+                  onClick={() => { 
+                    setShowChangePasswordModal(false); 
+                    setChangePasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' }); 
+                    setChangePasswordError(''); 
+                  }} 
+                  className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors" 
+                  disabled={isChangingPassword}
+                >
+                  ยกเลิก
+                </button>
+                <button 
+                  onClick={handleChangePassword} 
+                  className="flex-1 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors disabled:opacity-50" 
+                  disabled={isChangingPassword}
+                >
+                  {isChangingPassword ? 'กำลังเปลี่ยน...' : 'ยืนยัน'}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
