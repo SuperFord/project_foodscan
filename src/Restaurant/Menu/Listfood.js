@@ -9,10 +9,10 @@ export default function ListFood() {
   const [menus, setMenus] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openDropdown, setOpenDropdown] = useState(null);
-  const [categories, setCategories] = useState([]); // ดึงจาก API ก็ได้
+  const [categories, setCategories] = useState([]); 
   const [selectedCategory, setSelectedCategory] = useState("รายการอาหารทั้งหมด");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8); // เปลี่ยนจาก 10 เป็น 8
+  const [itemsPerPage] = useState(8); 
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchInput, setSearchInput] = useState("");
@@ -193,11 +193,6 @@ export default function ListFood() {
 
       {/* Food List */}
       <div className="p-4">
-        {/* สรุปผลลัพธ์ */}
-        <div className="mb-3 text-sm text-gray-600">
-          แสดงผล {displayedMenus.length} รายการ จากทั้งหมด {sortedMenus.length} รายการในหมวด "{selectedCategory}"
-        </div>
-
         {/* Search and Category Button */}
         <div className="flex items-center space-x-3 mb-4">
           {/* Search Input */}
@@ -297,12 +292,12 @@ export default function ListFood() {
                 />
                 {/* รายละเอียดเมนู */}
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold">ชื่อ : {menu.name}</h3>
+                  <h3 className="text-lg font-bold">{menu.name}</h3>
                   <p className="text-zinc-500">{menu.description}</p>
 
                   {/* ราคา (ซ้าย) + สวิตช์ (ขวา) */}
                   <div className="flex items-center justify-between mt-2">
-                    <p className="font-semibold">ราคา : {Math.floor(Number(menu.price))} บาท</p>
+                    <p className="font-semibold">{Math.floor(Number(menu.price))} บาท</p>
                     <div className="flex items-center space-x-2">
                       <span className={`font-semibold ${menu.available ? "text-yellow-500" : "text-zinc-500"}`}>
                         {menu.available ? "มีสินค้า" : "สินค้าหมด"}
