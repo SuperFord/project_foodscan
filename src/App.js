@@ -11,7 +11,6 @@ import Reservation from "./User/Menu/Reservation.js";
 import ReserTable from "./User/Menu/ReserTable.js";
 import ReserFood from "./User/Menu/ReserFood.js";
 import ReserDetail from "./User/Menu/ReserDetail.js";
-import ReserEdit from "./User/Menu/ReserEdit.js";
 import Detail from "./User/Menu/Detail.js";
 import UHistory from "./User/Menu/History.js";
 //Restaurant
@@ -56,7 +55,6 @@ function App() {
         <Route path="/user-reservation" element={<Reservation />} />
         <Route path="/user-reser-food" element={<ReserFood />} />
         <Route path="/user-reser-detail" element={<ReserDetail />} />
-        <Route path="/user-reser-edit" element={<ReserEdit />} />
         <Route path="/user-detail" element={<Detail />} />
         <Route path="/user-history" element={<UHistory />} />
         {/* Restaurant */}
