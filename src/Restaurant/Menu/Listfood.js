@@ -3,6 +3,7 @@ import { buildUrl } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaPlus, FaCog } from "react-icons/fa";
 import Switch from "react-switch";
+import Swal from "sweetalert2";
 
 export default function ListFood() {
   const navigate = useNavigate();
@@ -57,11 +58,27 @@ export default function ListFood() {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("คุณต้องการลบเมนูนี้หรือไม่?")) {
+    const result = await Swal.fire({
+      title: 'คุณต้องการลบเมนูนี้หรือไม่?',
+      text: "การกระทำนี้ไม่สามารถย้อนกลับได้!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'ลบ',
+      cancelButtonText: 'ยกเลิก'
+    });
+
+    if (result.isConfirmed) {
       try {
         const token = localStorage.getItem('restaurantToken');
         if (!token) {
-          alert('กรุณาเข้าสู่ระบบใหม่');
+          Swal.fire({
+            title: 'กรุณาเข้าสู่ระบบใหม่',
+            icon: 'warning',
+            timer: 1000,
+            showConfirmButton: false
+          });
           navigate('/restaurant-login');
           return;
         }
@@ -74,14 +91,29 @@ export default function ListFood() {
         });
         const result = await response.json();
         if (result.success) {
-          alert("ลบเมนูสำเร็จ!");
+          Swal.fire({
+            title: 'ลบเมนูสำเร็จ!',
+            icon: 'success',
+            timer: 1000,
+            showConfirmButton: false
+          });
           fetchMenus();
         } else {
-          alert("เกิดข้อผิดพลาดในการลบเมนู");
+          Swal.fire({
+            title: 'เกิดข้อผิดพลาดในการลบเมนู',
+            icon: 'error',
+            timer: 1000,
+            showConfirmButton: false
+          });
         }
       } catch (error) {
         // Error handling without console.log
-        alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์!");
+        Swal.fire({
+          title: 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์!',
+          icon: 'error',
+          timer: 1000,
+          showConfirmButton: false
+        });
       }
     }
   };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { buildUrl } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaUpload } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 export default function ListFoodAdd() {
   const navigate = useNavigate();
@@ -35,14 +36,25 @@ export default function ListFoodAdd() {
 
   const handleSubmit = async () => {
     if (!menuName || !price) {
-      alert("กรุณากรอกข้อมูลให้ครบถ้วน!");
+      Swal.fire({
+        title: 'กรุณากรอกข้อมูลให้ครบถ้วน!',
+        text: 'ชื่อเมนูและราคาเป็นข้อมูลที่จำเป็น',
+        icon: 'warning',
+        confirmButtonText: 'ตกลง',
+        confirmButtonColor: '#f59e0b'
+      });
       return;
     }
 
     // ดึง token จาก localStorage
     const token = localStorage.getItem('restaurantToken');
     if (!token) {
-      alert('กรุณาเข้าสู่ระบบใหม่');
+      Swal.fire({
+        title: 'กรุณาเข้าสู่ระบบใหม่',
+        icon: 'warning',
+        timer: 1000,
+        showConfirmButton: false
+      });
       navigate('/restaurant-login');
       return;
     }
@@ -68,19 +80,48 @@ export default function ListFoodAdd() {
       if (response.ok) {
         const result = await response.json();
         if (result.success) {
-          alert("บันทึกข้อมูลสำเร็จ!");
-          navigate("/listfood");
+          Swal.fire({
+            title: 'บันทึกข้อมูลสำเร็จ!',
+            icon: 'success',
+            timer: 1000,
+            showConfirmButton: false
+          }).then(() => {
+            navigate("/listfood");
+          });
         } else {
-          alert("เกิดข้อผิดพลาด!");
+          Swal.fire({
+            title: 'เกิดข้อผิดพลาด!',
+            text: result.message || 'ไม่สามารถบันทึกข้อมูลได้',
+            icon: 'error',
+            timer: 1000,
+            showConfirmButton: false
+          });
         }
       } else if (response.status === 401) {
-        alert('เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-        navigate('/restaurant-login');
+        Swal.fire({
+          title: 'เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่',
+          icon: 'warning',
+          timer: 1000,
+          showConfirmButton: false
+        }).then(() => {
+          navigate('/restaurant-login');
+        });
       } else {
-        alert("เกิดข้อผิดพลาด!");
+        Swal.fire({
+          title: 'เกิดข้อผิดพลาด!',
+          text: 'ไม่สามารถบันทึกข้อมูลได้',
+          icon: 'error',
+          timer: 1000,
+          showConfirmButton: false
+        });
       }
     } catch (error) {
-      alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์!");
+      Swal.fire({
+        title: 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์!',
+        icon: 'error',
+        timer: 1000,
+        showConfirmButton: false
+      });
     }
   };
 
@@ -95,8 +136,14 @@ export default function ListFoodAdd() {
     // ดึง token จาก localStorage
     const token = localStorage.getItem('restaurantToken');
     if (!token) {
-      alert('กรุณาเข้าสู่ระบบใหม่');
-      navigate('/restaurant-login');
+      Swal.fire({
+        title: 'กรุณาเข้าสู่ระบบใหม่',
+        icon: 'warning',
+        timer: 1000,
+        showConfirmButton: false
+      }).then(() => {
+        navigate('/restaurant-login');
+      });
       return;
     }
 
@@ -119,17 +166,46 @@ export default function ListFoodAdd() {
           setCategory(newCategory.trim()); // ตั้งค่าหมวดหมู่ที่เลือกให้เป็นอันใหม่
           setNewCategory("");
           setShowAddCategory(false);
+          Swal.fire({
+            title: 'เพิ่มหมวดหมู่สำเร็จ!',
+            icon: 'success',
+            timer: 1000,
+            showConfirmButton: false
+          });
         } else {
-          alert("ไม่สามารถเพิ่มหมวดหมู่ได้");
+          Swal.fire({
+            title: 'ไม่สามารถเพิ่มหมวดหมู่ได้',
+            text: result.message || 'เกิดข้อผิดพลาดในการเพิ่มหมวดหมู่',
+            icon: 'error',
+            timer: 1000,
+            showConfirmButton: false
+          });
         }
       } else if (response.status === 401) {
-        alert('เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-        navigate('/restaurant-login');
+        Swal.fire({
+          title: 'เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่',
+          icon: 'warning',
+          timer: 1000,
+          showConfirmButton: false
+        }).then(() => {
+          navigate('/restaurant-login');
+        });
       } else {
-        alert("ไม่สามารถเพิ่มหมวดหมู่ได้");
+        Swal.fire({
+          title: 'ไม่สามารถเพิ่มหมวดหมู่ได้',
+          text: 'เกิดข้อผิดพลาดในการเพิ่มหมวดหมู่',
+          icon: 'error',
+          timer: 1000,
+          showConfirmButton: false
+        });
       }
     } catch (error) {
-      alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์!");
+      Swal.fire({
+        title: 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์!',
+        icon: 'error',
+        timer: 1000,
+        showConfirmButton: false
+      });
     }
   };
 
