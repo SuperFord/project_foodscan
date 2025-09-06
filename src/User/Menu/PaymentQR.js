@@ -40,20 +40,21 @@ function PaymentQR() {
 
   const fetchQRSettings = async () => {
     try {
-      // ใช้ endpoint สาธารณะสำหรับดึงเลขพร้อมเพย์
-      const response = await fetch(buildUrl('/api/settings/promptpay'))
+      // ใช้ endpoint สาธารณะสำหรับดึงสถานะ QR
+      const response = await fetch(buildUrl('/api/settings/qr-status'))
       const data = await response.json()
 
       if (data.success) {
-        // ใช้ข้อมูลจาก promptpay endpoint
-        setQrEnabled(true) // สมมติว่าเปิดใช้งานถ้ามีเลขพร้อมเพย์
+        // เช็คสถานะ QR จริงจาก API
+        setQrEnabled(data.enableQR || false)
         setPromptpayNumber(data.promptpayNumber || "")
       } else {
         setError("ไม่สามารถโหลดการตั้งค่า QR ได้")
       }
       setLoading(false)
     } catch (err) {
-      // Error handling without console.log
+      setError("เกิดข้อผิดพลาดในการโหลดการตั้งค่า")
+      setLoading(false)
     }
   }
 

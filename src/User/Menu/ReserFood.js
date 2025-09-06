@@ -387,25 +387,68 @@ function ReserFood() {
 
               {/* confirm button */}
               <button
-                onClick={() => {
+                onClick={async () => {
                   const totalAmount = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-                  const tableNames = selectedTables.map(t => t.label).join(', '); // เอาไว้โชว์ในหน้า QR
+                  const tableNames = selectedTables.map(t => t.label).join(', ');
 
-                  navigate('/payment', {
-                    state: {
-                      totalAmount,
-                      fullName,
-                      tableNames,
-                      cart,
-                      selectedTables,
-                      currentDate: location.state?.currentDate,
-                      peopleCount: location.state?.peopleCount,
-                      time: location.state?.time,
-                      additionalDetails: location.state?.additionalDetails,
-                      joinTables: location.state?.joinTables,
-                      fromPage,
+                  try {
+                    // เช็คสถานะ QR ก่อน
+                    const response = await fetch(buildUrl('/api/settings/qr-status'));
+                    const data = await response.json();
+
+                    if (data.success && data.enableQR) {
+                      // QR เปิดอยู่ - ไปหน้า PaymentQR
+                      navigate('/payment', {
+                        state: {
+                          totalAmount,
+                          fullName,
+                          tableNames,
+                          cart,
+                          selectedTables,
+                          currentDate: location.state?.currentDate,
+                          peopleCount: location.state?.peopleCount,
+                          time: location.state?.time,
+                          additionalDetails: location.state?.additionalDetails,
+                          joinTables: location.state?.joinTables,
+                          fromPage,
+                        }
+                      });
+                    } else {
+                      // QR ปิดอยู่ - ไปยืนยันการจองเลย
+                      navigate('/reser-detail', {
+                        state: {
+                          totalAmount,
+                          fullName,
+                          tableNames,
+                          cart,
+                          selectedTables,
+                          currentDate: location.state?.currentDate,
+                          peopleCount: location.state?.peopleCount,
+                          time: location.state?.time,
+                          additionalDetails: location.state?.additionalDetails,
+                          joinTables: location.state?.joinTables,
+                          fromPage,
+                        }
+                      });
                     }
-                  });
+                  } catch (error) {
+                    // ถ้าเกิดข้อผิดพลาด ให้ไปหน้า PaymentQR เป็นค่าเริ่มต้น
+                    navigate('/payment', {
+                      state: {
+                        totalAmount,
+                        fullName,
+                        tableNames,
+                        cart,
+                        selectedTables,
+                        currentDate: location.state?.currentDate,
+                        peopleCount: location.state?.peopleCount,
+                        time: location.state?.time,
+                        additionalDetails: location.state?.additionalDetails,
+                        joinTables: location.state?.joinTables,
+                        fromPage,
+                      }
+                    });
+                  }
                 }}
                 className="mt-6 w-full bg-yellow-400 text-white py-2 rounded-lg font-bold text-lg"
               >
